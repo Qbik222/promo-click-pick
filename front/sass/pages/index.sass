@@ -1,12 +1,18 @@
 $blue: #000055
+$dark-blue: #00003d
 $white: #ffffff
 $magenta: #FF267E
 $green: #05C48A
+$orange: #FF7578
+$salad: #71FF8B
 $black: #1B1B1F
 $grey: #AEAEAE
 
-$font-suisse-intl-reg: SuisseIntl-Regular, sans-serif
-$font-suisse-intl-bold: SuisseIntl-Bold, sans-serif
+$font-favbet-text-reg: FavbetText-Regular, sans-serif
+$font-favbet-display-med: FavbetDisplay-Medium, sans-serif
+$font-favbet-display-cond-med: FavbetDisplay-CondensedMedium, sans-serif
+$font-favbet-display-cond-bold: FavbetDisplay-CondensedBold, sans-serif
+$font-favbet-display-bold: FavbetDisplay-Bold, sans-serif
 
 .hide
   display: none !important
@@ -27,6 +33,62 @@ body
     height: auto
   & > *
     font-family: inherit
+.btn
+  min-width: 320px
+  width: fit-content
+  padding: 10px
+  height: 50px
+  background: url("../img/btn.png") no-repeat 0 0/cover
+  background-size: 100% 100%
+  display: flex
+  align-items: center
+  justify-content: center
+  color: $dark-blue
+  font-family: $font-favbet-display-cond-med
+  font-size: 28px
+  letter-spacing: .01em
+  transition: background .5s ease-in-out
+  position: relative
+  &::before, &::after
+    content: ""
+    display: block
+    position: absolute
+    pointer-events: none
+    transition: background .5s ease-in-out, transform .5s ease-in-out
+  &::before
+    left: -40px
+    top: -10px
+    background: url("../img/btn-left-decor.png") no-repeat 0 0/cover
+    background-size: 100% 100%
+    width: 150px
+    height: 80px
+  &::after
+    right: -50px
+    top: -10px
+    background: url("../img/btn-right-decor.png") no-repeat 0 0/cover
+    background-size: 100% 100%
+    width: 120px
+    height: 70px
+
+  &:hover
+    cursor: pointer
+    background: url("../img/btn-hover.png") no-repeat 0 0/cover
+    &::before
+      //background: url("../img/btn-left-decor-hover.png") no-repeat 0 0/cover
+      //background-size: 100% 100%
+      transform: scale(1.05)
+    &::after
+      //background: url("../img/btn-right-decor-hover.png") no-repeat 0 0/cover
+      //background-size: 100% 100%
+      transform: scale(1.05)
+
+
+.title
+  text-transform: uppercase
+  color: transparent
+  background: $white url("../img/text-decor.png") repeat 0 0/contain
+  -webkit-background-clip: text
+  background-clip: text
 
 .fav-page
   background: $blue
@@ -36,6 +98,296 @@ body
   overflow: hidden
 
 
+.welcome
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: flex-end
+  width: 100%
+  padding: 375px 0 0 0
+  max-width: 1370px
+  background: url("../img/welcome/bg-desc.jpg") no-repeat 50% 0/cover
+  background-size: 1365px 767px
+  @media screen and (max-width: 1050px)
+    background: url("../img/welcome/bg-tab.jpg") no-repeat 50% 0/cover
+  @media screen and (max-width: 600px)
+    background: url("../img/welcome/bg-mob.jpg") no-repeat 50% 0/cover
+  &__title
+    color: $white
+    font-size: 36px
+    font-family: $font-favbet-display-bold
+    text-transform: uppercase
+    width: 680px
+    text-align: left
+    margin-bottom: -10px
+  &__prize
+    color: $white
+    font-size: 136px
+    line-height: 136px
+    font-family: $font-favbet-display-bold
+    text-transform: uppercase
+    display: flex
+    align-items: flex-start
+    justify-content: center
+    span
+      font-family: $font-favbet-display-med
+      font-size: 70px
+      line-height: 70px
+  &__btn
+    margin-top: 30px
+
+
+.info
+  max-width: 825px
+  display: flex
+  align-items: center
+  justify-content: flex-start
+  flex-direction: column
+  padding: 65px 0 0 0
+  &__title
+    //color: $white
+    font-size: 36px
+    font-family: $font-favbet-display-cond-bold
+
+    //animation: bg-heartbeat 2s ease-in-out infinite
+  &__text
+    color: $white
+    text-align: center
+    font-size: 20px
+    font-family: $font-favbet-text-reg
+    margin-top: 20px
+    margin-bottom: 16px
+
+
+.predictor
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  padding: 40px 0 0 0
+  &__title
+    font-family: $font-favbet-display-cond-bold
+    font-size: 36px
+  &__tabs
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 10px
+    margin: 20px 0
+    &-item
+      padding: 3px 16px
+      font-family: $font-favbet-display-cond-bold
+      font-size: 16px
+      letter-spacing: .02em
+      color: $white
+      border-radius: 3px
+      background: rgba($white, 0.24)
+      border: 1px solid rgba($white, 0.17)
+      &:hover
+        cursor: pointer
+      &._active
+        background: $magenta
+
+.stage
+  display: flex
+  flex-direction: column
+  &__top
+    display: flex
+    align-items: center
+    justify-content: center
+  &__card
+    width: 157px
+    height: 157px
+    border-radius: 14px
+    background: rgba($blue, .5) url("../img/predictor/stage/card-light.png") no-repeat -20px -25px/contain
+    &-icon
+      width: 95px
+      height: 43px
+    &-btn
+      width: 30px
+      height: 30px
+    &-text
+      font-family: $font-favbet-display-cond-med
+      font-size: 14px
+      letter-spacing: .01em
+    &.top-card
+      .stage
+        &__card
+          &-icon
+            width: 133px
+            height: 63px
+          &-btn
+            width: 51px
+            height: 51px
+    &._open
+      .stage
+        &__card
+          &-icon
+            background: url("../img/predictor/stage/card-open/icon.png") no-repeat 0 0/contain
+          &-btn
+            background: url("../img/predictor/stage/card-open/btn.png") no-repeat 0 0/contain
+          &-text
+            color: $green
+    &._selected
+      .stage
+        &__card
+          &-icon
+            background: url("../img/predictor/stage/card-selected/icon.png") no-repeat 0 0/contain
+          &-btn
+            background: url("../img/predictor/stage/card-selected/btn.png") no-repeat 0 0/contain
+          &-text
+            color: $white
+    &._done
+      .stage
+        &__card
+          &-icon
+            background: url("../img/predictor/stage/card-done/icon.png") no-repeat 0 0/contain
+          &-btn
+            background: url("../img/predictor/stage/card-done/btn.png") no-repeat 0 0/contain
+          &-text
+            color: $white
+    &._lose
+      .stage
+        &__card
+          &-icon
+            background: url("../img/predictor/stage/card-lose/icon.png") no-repeat 0 0/contain
+          &-btn
+            background: url("../img/predictor/stage/card-lose/btn.png") no-repeat 0 0/contain
+          &-text
+            color: $orange
+    &._win
+      .stage
+        &__card
+          &-icon
+            background: url("../img/predictor/stage/card-win/icon.png") no-repeat 0 0/contain
+          &-btn
+            background: url("../img/predictor/stage/card-win/btn.png") no-repeat 0 0/contain
+          &-text
+            color: $salad
+.drop
+  max-width: 615px
+  width: 100%
+  margin: 0 auto
+  border-radius: 10px
+  position: relative
+  z-index: 5
+  &__bottom-text
+    color: $white
+    font-size: 10px
+    line-height: 16px
+    font-family: $font-favbet-text-reg
+    text-align: center
+    margin-bottom: 15px
+  .dropdown[open] summary::before
+    transform:  rotate(180deg)
+  summary
+    list-style: none
+    padding: 12px 16px
+    font-family: $font-favbet-display-cond-med
+    font-size: 16px
+    cursor: pointer
+    background-size: 100% 100%
+    display: flex
+    align-items: center
+    justify-content: space-between
+    color: $white
+    background: rgba($white, 0.1)
+    border-radius: 4px
+    border: 1px solid rgba($white, 0.2)
+    @media screen and (max-width: 600px)
+      font-size: 14px
+      line-height: 22px
+    &::before
+      content: ""
+      display: block
+      min-width: 13px
+      height: 6px
+      background: url("../img/arrow-drop.png") no-repeat 0 0/contain
+      order: 2
+  &-wrap
+    overflow: hidden
+    padding: 5px
+    margin-top: 10px
+    max-height: 350px
+    height: fit-content
+    border: 4px solid rgba($white, .25)
+    background: rgba($white, .1) url("../img/drop-bg.png") repeat 0 0/contain
+    border-radius: 4px 4px 16px 16px
+  &-txt
+    padding: 5px 15px 15px 15px
+    max-height: 325px
+    overflow-y: auto
+    scrollbar-width: auto
+    &::-webkit-scrollbar-thumb
+      background: $green
+      width: 3px
+      border-radius: 3px
+    &::-webkit-scrollbar
+      background: $white
+      width: 3px
+    &-list
+      display: flex
+      flex-direction: column
+      gap: 15px
+      table
+        border-spacing: 0
+        border-color: $white
+        tr, td
+          border-color: $white
+          color: $white
+        font-family: $font-favbet-text-reg
+
+        td
+          border: none
+          border-right: 1px solid $white
+          padding: 0 5px
+        th
+          padding: 0 5px
+      p, strong, a
+        font-size: 16px
+        line-height: 26px
+        font-family: $font-favbet-text-reg
+        color: $white
+        @media screen and (max-width: 600px)
+          font-size: 14px
+          line-height: 22px
+      span
+        font-family: $font-favbet-text-reg
+        display: block
+      tr,td
+        font-family: $font-favbet-text-reg
+      td
+        padding-left: 5px
+
+
+.retreat1
+  padding-left: 30px
+  strong
+    font-family: $font-favbet-text-reg
+    color: $white
+.circle
+  padding-left: 35px
+  &:before
+    content: ''
+    width: 5px
+    height: 5px
+    background: $white
+    border-radius: 50%
+    display: inline-block
+    margin: 0 4px 2px 0
+
+@keyframes bg-heartbeat
+  0%
+    background-size: 100% auto
+  20%
+    background-size: 102% auto
+  25%
+    background-size: 100% auto
+  30%
+    background-size: 100% auto
+
+  100%
+    background-size: 100% auto
 
 // loader
 
