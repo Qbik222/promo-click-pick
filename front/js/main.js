@@ -2,48 +2,24 @@
 
     const apiURL = 'https://fav-prom.com/api_your_promo'
 
-    const getActiveWeek = (promoStartDate, weekDuration) => {
-        const currentDate = new Date();
-        let weekDates = [];
+    const stagesData = [
+        { data: new Date("2025-05-20T00:00:00+03:00") },
+        { data: new Date("2025-05-25T00:00:00+03:00") },
+        { data: new Date("2025-05-30T00:00:00+03:00") },
+        { data: new Date("2025-06-05T00:00:00+03:00") }
+    ];
 
-        const Day = 24 * 60 * 60 * 1000;
-        const Week = weekDuration * Day;
+    const currentDate = new Date("2025-06-05T00:00:00+03:00");
 
-        const formatDate = (date) =>
-            `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}`;
-
-        const calculateWeekPeriod = (weekIndex) => {
-            const baseStart = promoStartDate.getTime();
-            const start = new Date(baseStart + weekIndex * Week);
-            let end = new Date(start.getTime() + (weekDuration * Day - 1));
-            return { start, end };
-        };
-
-        let activeWeekIndex = null;
-
-        // Перевірка поточного тижня
-        for (let i = 0; i < 10; i++) { // Обмежуємо 10 тижнями (якщо потрібно більше, просто змініть лічильник)
-            const { start, end } = calculateWeekPeriod(i);
-            if (currentDate >= start && currentDate <= end) {
-                activeWeekIndex = i + 1;
-                break;
-            }
-        }
-
-        return activeWeekIndex;
-    };
-
-    const promoStartDate = new Date("2025-05-05T00:00:00");
-    const weekDuration = 10;
-
-    const activeWeek = getActiveWeek(promoStartDate, weekDuration) || 1;
-
+    let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
 
     const mainPage = document.querySelector(".fav-page"),
         unauthMsgs = document.querySelectorAll('.unauth-msg'),
         participateBtns = document.querySelectorAll('.part-btn'),
         redirectBtns = document.querySelectorAll('.btn-join'),
-        loader = document.querySelector(".spinner-overlay")
+        loader = document.querySelector(".spinner-overlay"),
+        stages = document.querySelectorAll("[data-stage]"),
+        stagesTabs = document.querySelectorAll("[data-stage-tab]")
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -99,68 +75,15 @@
 
     }
 
+    function setCurrentStage(){
+
+    }
+
     function hideLoader(){
         loader.classList.add("hide")
         document.body.style.overflow = "auto"
         mainPage.classList.remove("loading")
     }
-
-    async function init() {
-        let attempts = 0;
-        const maxAttempts = 20;
-        const attemptInterval = 50;
-
-        function tryDetectUserId() {
-            if (window.store) {
-                const state = window.store.getState();
-                userId = state.auth.isAuthorized && state.auth.id || '';
-            } else if (window.g_user_id) {
-                userId = window.g_user_id;
-            }
-        }
-
-        function quickCheckAndRender() {
-            checkUserAuth();
-
-        }
-
-        const waitForUserId = new Promise((resolve) => {
-            const interval = setInterval(() => {
-                tryDetectUserId();
-                if (userId || attempts >= maxAttempts) {
-                    quickCheckAndRender();
-                    clearInterval(interval);
-                    resolve();
-                }
-                attempts++;
-            }, attemptInterval);
-        });
-
-        await waitForUserId;
-    }
-
-    function loadTranslations() {
-        return fetch(`${apiURL}/new-translates/${locale}`).then(res => res.json())
-            .then(json => {
-                i18nData = json;
-                translate();
-
-                var mutationObserver = new MutationObserver(function (mutations) {
-                    const shouldSkip = mutations.every(mutation => {
-                        return mutation.target.closest('.table');
-                    });
-                    if (shouldSkip) return;
-                    translate();
-                });
-
-                mutationObserver.observe(document.getElementById("yourPromoId"), {
-                    childList: true,
-                    subtree: true
-                });
-
-            });
-    }
-
 
     function checkUserAuth() {
         const loadTime = 200;
@@ -251,8 +174,9 @@
         resultsTableOther.innerHTML = '';
         if (!users?.length) return;
         const currentUser = users.find(user => user.userid === currentUserId);
-        const topUsers = users.slice(0, 10);
-        const isTopCurrentUser = currentUser && topUsers.some(user => user.userid === currentUserId);
+        const isTopCurrentUser = currentUser && users.slice(0, 10).some(user => user.userid === currentUserId);
+        const topUsersLength = !userId || isTopCurrentUser  ? 13 : 10;
+        const topUsers = users.slice(0, topUsersLength);
         topUsers.forEach(user => {
             displayUser(user, user.userid === currentUserId, resultsTable, topUsers, isTopCurrentUser, week);
         });
@@ -274,8 +198,8 @@
                 userRow.classList.add(`place${userPlace}`);
             }
 
-            if (highlight) {
-                userRow.classList.add('_your');
+            if (highlight || isCurrentUser && !neighbor) {
+                userRow.classList.add('you');
             } else if (neighbor) {
                 userRow.classList.add('_neighbor');
             }
@@ -283,9 +207,10 @@
             userRow.innerHTML = `
             <div class="table__row-item">
                 ${userPlace < 10 ? '0' + userPlace : userPlace}
+                ${isCurrentUser && !neighbor ? '<span class="you">' + translateKey("you") + '</span>' : ''}
             </div>
             <div class="table__row-item">
-                ${highlight ? userData.userid : maskUserId(userData.userid)}
+                ${isCurrentUser && !neighbor ? userData.userid : maskUserId(userData.userid)}
             </div>
             <div class="table__row-item">
                 ${userData.points}
@@ -366,6 +291,101 @@
 
             });
     }
+
+    async function init() {
+        let attempts = 0;
+        const maxAttempts = 20;
+        const attemptInterval = 50;
+
+        function tryDetectUserId() {
+            if (window.store) {
+                const state = window.store.getState();
+                userId = state.auth.isAuthorized && state.auth.id || '';
+            } else if (window.g_user_id) {
+                userId = window.g_user_id;
+            }
+        }
+
+        function quickCheckAndRender() {
+            stages.forEach((stage, i) => {
+
+                currentStage > stages.length - 1 ? currentStage = stages.length - 1 : null;
+                console.log(currentStage);
+
+                stage.classList.toggle('_active', i === currentStage);
+                stagesTabs[i].classList.toggle('_active', i === currentStage);
+
+                const top = stage.querySelector(".stage__top");
+                const bottom = stage.querySelector(".stage__bottom");
+                const timer = stage.querySelector(".timer");
+                const playoffWrap = stage.querySelector(".playoff__wrapper");
+
+                if (i > currentStage) {
+                    top?.classList.add("hide");
+                    bottom?.classList.add("hide");
+                    playoffWrap?.classList.add("hide");
+                    timer?.classList.remove("hide");
+                } else {
+                    top?.classList.remove("hide");
+                    bottom?.classList.remove("hide");
+                    playoffWrap?.classList.remove("hide");
+                    timer?.classList.add("hide");
+                }
+            });
+            // click handling
+
+
+            stagesTabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    if (e.target.closest('._active')) return
+                    const targetStageValue = tab.getAttribute('data-stage-tab');
+                    const targetStage = document.querySelector(`[data-stage="${targetStageValue}"]`);
+
+                    stages.forEach(stage => stage.classList.remove('_active'));
+                    stagesTabs.forEach(t => t.classList.remove('_active'));
+
+                    tab.classList.add('_active');
+                    targetStage?.classList.add('_active');
+                });
+            });
+            // checkUserAuth();
+        }
+
+        const waitForUserId = new Promise((resolve) => {
+            const interval = setInterval(() => {
+                tryDetectUserId();
+                if (userId || attempts >= maxAttempts) {
+                    quickCheckAndRender();
+                    clearInterval(interval);
+                    resolve();
+                }
+                attempts++;
+            }, attemptInterval);
+        });
+
+        await waitForUserId;
+    }
+
+    function loadTranslations() {
+        return request(`/new-translates/${locale}`)
+            .then(json => {
+                i18nData = json;
+                translate();
+                const targetNode = document.getElementById("goals-or-zeros-leage");
+                const mutationObserver = new MutationObserver(function (mutations) {
+                    mutationObserver.disconnect();
+                    translate();
+                    mutationObserver.observe(targetNode, { childList: true, subtree: true });
+                });
+                mutationObserver.observe(targetNode, {
+                    childList: true,
+                    subtree: true
+                });
+
+            });
+    }
+
+    init()
 
     // loadTranslations().then(init) запуск ініту сторінки
 
