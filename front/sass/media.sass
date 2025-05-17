@@ -1,7 +1,29 @@
 @media screen and (max-width: 1300px)
+  .welcome
+    max-width: 768px
+    padding-top: 210px
+    &__title
+      font-size: 24px
+      width: 475px
+      margin-bottom: -25px
+    &__prize
+      font-size: 96px
+      span
+        font-size: 50px
+        line-height: 90px
+    &__btn
+      margin-top: 0
+  .info
+    max-width: 700px
+    &::before
+      width: 710px
+      height: 420px
+    &__text
+      font-size: 18px
   .predictor
-    max-width: 750px
-
+    max-width: 700px
+    padding: 40px 10px
+    overflow: visible
   .stage
     max-width: 100%
     &__bottom
@@ -9,3 +31,231 @@
     &__wrap
       max-width: 750px
       flex-wrap: wrap
+    &__card
+      width: 104px
+      height: 104px
+      border-radius: 12px
+      gap: 5px
+      &-icon
+        width: 72px
+        height: 35px
+      &-btn
+        width: 22px
+        height: 22px
+      &-text
+        font-size: 10px
+      &.top-card
+        width: 157px
+        height: 157px
+        &._selected
+          &::after
+            width: 18px
+            height: 18px
+        &:nth-child(1)
+          &::before
+            content: "3 - 0"
+        &:nth-child(2)
+          &::before
+            content: "0 - 3"
+        .stage
+          &__card
+            &-icon
+              width: 104px
+              height: 50px
+            &-btn
+              width: 40px
+              height: 40px
+            &-text
+              font-size: 14px
+      &._selected
+        &::after
+          width: 16px
+          height: 16px
+          left: 3px
+          top: 3px
+
+      &._done
+        gap: 10px
+  .playoff
+    align-self: flex-start
+    width: calc(100vw - 20px)
+    &__stage
+      &:nth-child(4)
+        margin-left: 50px
+    &__wrapper
+      max-width: 100%
+      overflow: auto
+      &::-webkit-scrollbar
+        width: 0
+        height: 0
+
+@media screen and (max-width: 850px)
+  .table
+    gap: 3px
+    min-height: 260px
+    &__head
+      .table
+        &__row
+          height: 26px
+          &-item
+            font-size: 16px
+    &__row
+      height: 26px
+      &-item
+        width: 120px
+        font-size: 16px
+
+@media screen and (max-width: 690px)
+  .table
+    max-width: 390px
+    min-width: 390px
+    &__body
+      &-scroll
+        width: 100%
+    &__head
+      .table
+        &__row
+          padding: 0 8px
+          &-item
+            width: 65px
+            font-size: 14px
+    &__row
+      &-item
+        width: 65px
+        font-size: 14px
+        &:nth-child(1)
+          width: 38px
+          text-align: center
+        &:nth-child(2)
+          width: 80px
+        &:last-child
+          width: 80px
+          text-align: right
+          justify-content: flex-end
+          padding-right: 8px
+@media screen and (max-width: 650px)
+  .welcome
+    position: relative
+    &__title
+      z-index: 2
+    &__prize
+      z-index: 2
+    &::before
+      content: ""
+      position: absolute
+      z-index: 0
+      bottom: 0
+      left: 0
+      width: 100%
+      height: 100%
+      pointer-events: none
+      background: linear-gradient(180deg, rgba($dark-blue, 0) 15%, $dark-blue 95%)
+  .predictor
+    width: 100%
+    max-width: 100%
+  .drop
+    width: 95vw
+
+@media screen and (max-width: 550px)
+  .welcome
+    &__title
+      font-size: 24px
+      width: 325px
+      margin-bottom: 0
+    &__prize
+      font-size: 64px
+      line-height: 64px
+      span
+        font-size: 38px
+        line-height: 42px
+    &__btn
+      margin-top: 15px
+  .info
+    padding: 35px 10px 0 10px
+    &__title
+      font-size: 32px
+  .playoff
+    align-self: center
+    height: fit-content
+    overflow: visible
+    width: fit-content
+    position: relative
+    border-radius: 0
+    &__btn-right, &__btn-left
+      display: block
+      width: 42px
+      height: 24px
+      background: url("../img/predictor/arrow.png") no-repeat 0 0/contain
+      top: 0
+      z-index: 10
+      position: absolute
+    &__btn-left
+      left: 0
+      transform: translateX(-100%) scale(-1, 1)
+    &__btn-right
+      right: 0
+      transform: translateX(100%)
+    &__wrapper
+      border: none
+      padding: 0
+      height: fit-content
+      width: fit-content
+      border-radius: 0
+    &__wrap
+      height: fit-content
+      gap: 45px
+      border-radius: 0
+    &__stage
+      height: fit-content
+      &:nth-child(3), &:nth-child(4)
+        margin: 0
+        .playoff
+          &__decor
+            display: none
+            &-top, &-bottom
+              display: none
+      &:nth-child(4)
+        width: 280px
+        align-items: center
+        .playoff__stage-title
+          margin: 0 0 20px 0
+
+@media screen and (max-width: 390px)
+  .results
+    max-width: 100%
+    overflow: hidden
+    &__scroll
+      overflow: auto
+      width: 100%
+      padding: 5px 5px 10px 5px
+
+@media screen and (max-width: 374px)
+  .predictor
+    &__tabs
+      &-item
+        font-size: 14px
+        padding: 3px 10px
+  .stage
+    &__top
+      transform: scale(.92)
+  .playoff
+    &__btn-left
+      left: 0
+      transform: translateX(0) scale(-1, 1)
+    &__btn-right
+      right: 0
+      transform: translateX(0)
+    &__stage
+      &:nth-child(2)
+        .playoff
+          &__decor
+            display: none
+            &-top, &-bottom
+              display: none
+
+
+@media screen and (max-width: 360px)
+  .btn
+    transform: scale(.95)
+
+

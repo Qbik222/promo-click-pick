@@ -19,7 +19,8 @@
         redirectBtns = document.querySelectorAll('.btn-join'),
         loader = document.querySelector(".spinner-overlay"),
         stages = document.querySelectorAll("[data-stage]"),
-        stagesTabs = document.querySelectorAll("[data-stage-tab]")
+        stagesTabs = document.querySelectorAll("[data-stage-tab]"),
+        playoffStage = document.querySelector(".playoff")
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -307,6 +308,8 @@
         }
 
         function quickCheckAndRender() {
+            // checkUserAuth();
+
             stages.forEach((stage, i) => {
 
                 currentStage > stages.length - 1 ? currentStage = stages.length - 1 : null;
@@ -332,9 +335,6 @@
                     timer?.classList.add("hide");
                 }
             });
-            // click handling
-
-
             stagesTabs.forEach(tab => {
                 tab.addEventListener('click', (e) => {
                     if (e.target.closest('._active')) return
@@ -348,7 +348,114 @@
                     targetStage?.classList.add('_active');
                 });
             });
-            // checkUserAuth();
+
+            // console.log(playoffStage.getBoundingClientRect().left - 10)
+
+
+            let initialOffsetLeft = null;
+
+            const updatePlayoffPosition = () => {
+                setTimeout(() =>{
+                    if (window.innerWidth <= 1300 && window.innerWidth > 550) {
+                        playoffStage.style.transform = "";
+                        initialOffsetLeft = playoffStage.getBoundingClientRect().left;
+                        const currentLeft = initialOffsetLeft
+                        const shift = currentLeft - 10;
+                        playoffStage.style.transform = `translateX(-${shift}px)`;
+                    } else {
+                        playoffStage.style.transform = "";
+                        initialOffsetLeft = null;
+                    }
+                }, 10)
+
+            };
+
+            updatePlayoffPosition();
+
+            window.addEventListener("orientationchange", updatePlayoffPosition);
+            window.addEventListener("resize", updatePlayoffPosition);
+
+            const playoffPhases = document.querySelectorAll('.playoff__stage');
+            const playoffContainer = document.querySelector('.playoff');
+            const playoffNext = document.querySelector('.playoff__btn-right');
+            const playoffPrev = document.querySelector('.playoff__btn-left');
+
+            let phaseCount = 3;
+            let isMobile = window.innerWidth <= 550;
+
+            const setCurrentPhase = (phases, current) => {
+                phases.forEach((phase, i) => {
+                    phase.classList.toggle("hide", i !== current);
+                });
+            };
+
+            const showAllPhases = (phases) => {
+                phases.forEach(phase => phase.classList.remove("hide"));
+            };
+
+            const hideAllExceptCurrent = () => {
+                setCurrentPhase(playoffPhases, phaseCount);
+            };
+
+            const handleNext = () => {
+                phaseCount = (phaseCount + 1) % playoffPhases.length;
+                hideAllExceptCurrent();
+            };
+
+            const handlePrev = () => {
+                phaseCount = (phaseCount - 1 + playoffPhases.length) % playoffPhases.length;
+                hideAllExceptCurrent();
+            };
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            const handleSwipe = () => {
+                const diff = touchEndX - touchStartX;
+
+                if (Math.abs(diff) > 50) {
+                    if (diff < 0) {
+                        handleNext();
+                    } else {
+                        handlePrev();
+                    }
+                }
+            };
+
+            if (isMobile) {
+                hideAllExceptCurrent();
+                playoffNext.addEventListener('click', handleNext);
+                playoffPrev.addEventListener('click', handlePrev);
+
+                playoffContainer.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                playoffContainer.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                });
+            }
+
+            window.addEventListener('resize', () => {
+                const nowMobile = window.innerWidth <= 550;
+
+                if (nowMobile && !isMobile) {
+                    isMobile = true;
+                    hideAllExceptCurrent();
+                    playoffNext.addEventListener('click', handleNext);
+                    playoffPrev.addEventListener('click', handlePrev);
+                }
+
+                if (!nowMobile && isMobile) {
+                    isMobile = false;
+                    showAllPhases(playoffPhases);
+                    playoffNext.removeEventListener('click', handleNext);
+                    playoffPrev.removeEventListener('click', handlePrev);
+                }
+            });
+
+
         }
 
         const waitForUserId = new Promise((resolve) => {
