@@ -155,6 +155,9 @@
     max-width: 100%
   .drop
     width: 95vw
+  .playoff
+    &__decor
+      display: none
 
 @media screen and (max-width: 550px)
   .welcome
@@ -219,6 +222,24 @@
         align-items: center
         .playoff__stage-title
           margin: 0 0 20px 0
+  .popups
+    .playoff
+      &__popup
+        max-height: 500px
+        &-scroll
+          max-height: 500px
+          overflow: auto
+          gap: 5px
+          max-width: 310px
+          &::-webkit-scrollbar-thumb
+            width: 3px
+            background: $green
+            border-radius: 2px
+          &::-webkit-scrollbar
+            width: 3px
+            background: rgba($white, .1)
+      &__decor
+        bottom: -20px
 
 @media screen and (max-width: 390px)
   .results
@@ -228,6 +249,12 @@
       overflow: auto
       width: 100%
       padding: 5px 5px 10px 5px
+      &::-webkit-scrollbar
+        height: 0px
+        background: $white
+      &::-webkit-scrollbar-thumb
+        height: 0px
+        background: $green
 
 @media screen and (max-width: 374px)
   .predictor

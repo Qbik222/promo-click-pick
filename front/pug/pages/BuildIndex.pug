@@ -1,3 +1,9 @@
+button.menu-btn menu
+.menu-test
+    button.dark-btn dark
+    button.btn-popup-win  3 - 0
+    button.btn-popup-lose  0 - 3
+    button.btn-popup-other  others
 .fav-page.loading
     .spinner-overlay
         .spinner
@@ -367,21 +373,21 @@
                         .table__row-item(data-translate="tablePrize") приз*
                 .table__body#table
                     .table__body-scroll
-                        .table__row
+                        .table__row.place1
                             .table__row-item 1
                             .table__row-item 100300268
                             .table__row-item 111111111
                             .table__row-item 111
                             .table__row-item 111111111
                             .table__row-item *********
-                        .table__row
+                        .table__row.place2
                             .table__row-item 2
                             .table__row-item 100300268
                             .table__row-item 111111111
                             .table__row-item 111
                             .table__row-item 111111111
                             .table__row-item *********
-                        .table__row
+                        .table__row.place3
                             .table__row-item 3
                             .table__row-item 100300268
                             .table__row-item 111111111
@@ -594,7 +600,7 @@
                 .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]
             .playoff__popup.win-popup.hide
                 .playoff__popup-close
-                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle")] Вибери команду #[span.popup-title-score 0 - 3]
+                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle")] Вибери команду #[span.popup-title-score 3 - 0]
                 .playoff__decor vs
                 .playoff__popup-scroll
                     .playoff__choose-team._selected

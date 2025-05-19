@@ -6,6 +6,7 @@ $green: #05C48A
 $orange: #FF7578
 $salad: #71FF8B
 $black: #1B1B1F
+$dark: #191A23
 $grey: #AEAEAE
 
 $font-favbet-text-reg: FavbetText-Regular, sans-serif
@@ -13,6 +14,35 @@ $font-favbet-display-med: FavbetDisplay-Medium, sans-serif
 $font-favbet-display-cond-med: FavbetDisplay-CondensedMedium, sans-serif
 $font-favbet-display-cond-bold: FavbetDisplay-CondensedBold, sans-serif
 $font-favbet-display-bold: FavbetDisplay-Bold, sans-serif
+
+
+//test
+.menu-btn
+  position: fixed
+  top: 0
+  left: 0
+  z-index: 20
+  width: fit-content
+  background: white
+  padding: 3px
+
+
+.menu-test
+  position: fixed
+  left: 0
+  top: 25px
+  z-index: 20
+  display: flex
+  gap: 2px
+  flex-direction: column
+  & > button
+    width: fit-content
+    background: white
+    color: black
+    padding: 2px
+    font-family: inherit
+    border-radius: 2px
+
 
 .hide
   display: none !important
@@ -201,6 +231,11 @@ body
     pointer-events: none
     transform: translate(-50%, 0)
     background: url("../img/predictor/bg-desc.png") no-repeat 50% 0/cover
+    @media screen and (max-width: 1050px)
+      background: url("../img/predictor/bg-tab.png") no-repeat 50% 0/cover
+    @media screen and (max-width: 600px)
+      background: url("../img/predictor/bg-mob.png") no-repeat 50% 50%/cover
+
   &__title
     font-family: $font-favbet-display-cond-bold
     font-size: 36px
@@ -824,6 +859,9 @@ body
   background: url("../img/results/bg-desc.jpg") no-repeat 50% -100px/cover
   background-size: 800px 700px
   margin: -50px 0 0 0
+  @media screen and (max-width: 600px)
+    background: url("../img/results/bg-mob.jpg") no-repeat 50% -100px/cover
+    background-size: 620px 570px
   &::before
     content: ""
     display: block
@@ -855,7 +893,7 @@ body
     display: flex
     flex-direction: column
     align-items: center
-    max-height: 200px
+    max-height: 205px
     overflow: auto
     scrollbar-width: auto
     &-scroll
@@ -891,6 +929,7 @@ body
       color: $white
       font-family: $font-favbet-text-reg
       font-size: 20px
+      height: 26px
       width: 150px
       &:nth-child(1)
         width: 70px
@@ -904,11 +943,13 @@ body
       .table__row-item
         &:nth-child(1)
           &::after
+            position: absolute
+            left: 0
+            top: 0
             content: ""
             display: block
-            width: 20px
-            height: 22px
-            margin-left: 5px
+            width: 13px
+            height: 13px
     &.place1
       .table__row-item
         &:nth-child(1)
@@ -1027,6 +1068,11 @@ body
         align-items: center
         flex-wrap: wrap
         gap: 15px
+    .others-popup
+      .playoff
+        &__popup
+          &-progress
+            display: flex
 
 .drop
   max-width: 615px
@@ -1193,6 +1239,56 @@ body.dark
     transform: scale(.8)
   100%
     transform: scale(1)
+
+
+// dark
+body.dark
+  .fav-page
+    background: $dark
+  .welcome
+    background: url("../img/welcome/bg-desc-dark.jpg") no-repeat 50% 0/cover
+    background-size: 1365px 767px
+    @media screen and (max-width: 1300px)
+      background: url("../img/welcome/bg-tab-dark.jpg") no-repeat 50% 0/cover
+      background-size: 768px 432px
+    @media screen and (max-width: 650px)
+      background: url("../img/welcome/bg-mob-dark.jpg") no-repeat 50% 0/cover
+      background-size: 100% auto
+      &::before
+        background: linear-gradient(180deg, rgba($dark, 0) 15%, $dark 95%)
+  .predictor
+    &::before
+      background: url("../img/predictor/bg-desc-dark.png") no-repeat 50% 0/cover
+      @media screen and (max-width: 1050px)
+        background: url("../img/predictor/bg-tab-dark.png") no-repeat 50% 0/cover
+      @media screen and (max-width: 600px)
+        background: url("../img/predictor/bg-mob-dark.png") no-repeat 50% 50%/cover
+  .results
+    background: url("../img/results/bg-desc-dark.jpg") no-repeat 50% -100px/cover
+    background-size: 800px 700px
+    @media screen and (max-width: 600px)
+      background: url("../img/results/bg-mob-dark.jpg") no-repeat 50% -100px/cover
+      background-size: 620px 570px
+  .info
+    &::before
+      background: url("../img/info/bg-light-desc-dark.png") no-repeat 0 0/contain
+  .table
+    &__head
+      .table__row
+        background: linear-gradient(180deg, #191A23 0%, #272837 100%)
+    &__row
+      background: linear-gradient(180deg, #191A23 0%, #272837 100%)
+      &.you
+        background: $magenta
+  .playoff, .stage
+    &__card
+      background: rgba($dark, 0.5) url("../img/predictor/stage/card-light-dark.png") no-repeat 0 -5px/contain
+  .playoff
+    &__choose
+      &-team
+        background: radial-gradient(81.92% 81.92% at 50% 35.35%, rgba(108, 108, 108, 0.41) 0%, rgba(169, 169, 169, 0.00) 54.33%), rgba(25, 26, 35, 0.50)
+
+
 
 @keyframes rotate
   0%

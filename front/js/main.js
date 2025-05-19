@@ -41,7 +41,7 @@
 
     let debug = true
 
-    if (debug) hideLoader()
+    // if (debug) hideLoader()
 
     let i18nData = {};
     const translateState = true;
@@ -310,6 +310,8 @@
         function quickCheckAndRender() {
             // checkUserAuth();
 
+            setTimeout(hideLoader, 1000)
+
             stages.forEach((stage, i) => {
 
                 currentStage > stages.length - 1 ? currentStage = stages.length - 1 : null;
@@ -495,5 +497,83 @@
     init()
 
     // loadTranslations().then(init) запуск ініту сторінки
+
+    //test
+
+    document.querySelector('.dark-btn').addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+    });
+
+    // const lngBtn = document.querySelector(".lng-btn")
+    //
+    // lngBtn.addEventListener("click", () => {
+    //     if (sessionStorage.getItem("locale")) {
+    //         sessionStorage.removeItem("locale");
+    //     } else {
+    //         sessionStorage.setItem("locale", "hr");
+    //     }
+    //     window.location.reload();
+    // });
+
+
+    // const authBtn = document.querySelector(".auth-btn")
+    //
+    // authBtn.addEventListener("click", () =>{
+    //     if(userId){
+    //         sessionStorage.removeItem("userId")
+    //     }else{
+    //         sessionStorage.setItem("userId", "11111222")
+    //     }
+    //     window.location.reload()
+    // });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelector(".menu-btn")?.addEventListener("click", () => {
+            document.querySelector(".menu-test")?.classList.toggle("hide");
+        });
+    });
+
+    const overlay = document.querySelector('.popups');
+    const popupWin = document.querySelector('.win-popup');
+    const popupLose = document.querySelector('.lose-popup');
+    const popupOther = document.querySelector('.others-popup');
+
+    console.log(popupWin.querySelector(".playoff__popup-close"))
+
+    function setHidePopup(popup){
+        console.log(popup.querySelector(".playoff__popup-close"));
+        const closeBtn = popup.querySelector('.playoff__popup-close');
+
+        closeBtn.addEventListener('click', () =>{
+            overlay.classList.add('overlay-opacity');
+            popup.classList.add("hide")
+        });
+    }
+
+    setHidePopup(popupWin);
+    setHidePopup(popupLose);
+    setHidePopup(popupOther);
+
+
+    document.querySelector('.btn-popup-win').addEventListener('click', () =>{
+        overlay.classList.remove('overlay-opacity');
+        popupWin.classList.remove('hide');
+        popupLose.classList.add('hide');
+        popupOther.classList.add('hide');
+    })
+
+    document.querySelector('.btn-popup-lose').addEventListener('click', () =>{
+        overlay.classList.remove('overlay-opacity');
+        popupWin.classList.add('hide');
+        popupLose.classList.remove('hide');
+        popupOther.classList.add('hide');
+    })
+
+    document.querySelector('.btn-popup-other').addEventListener('click', () =>{
+        overlay.classList.remove('overlay-opacity');
+        popupWin.classList.add('hide');
+        popupLose.classList.add('hide');
+        popupOther.classList.remove('hide');
+    })
 
 })();
