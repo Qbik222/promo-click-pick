@@ -130,7 +130,9 @@
           padding: 0 8px
           &-item
             width: 65px
-            font-size: 14px
+            font-size: 13px
+            line-height: 13px
+            text-align: center
     &__row
       &-item
         width: 65px
@@ -140,6 +142,10 @@
           text-align: center
         &:nth-child(2)
           width: 80px
+        &:nth-child(5)
+          text-align: center
+          font-size: 10px
+          line-height: 11px
         &:last-child
           width: 80px
           text-align: right
@@ -264,10 +270,10 @@
       width: 100%
       padding: 5px 5px 10px 5px
       &::-webkit-scrollbar
-        height: 0px
+        height: 1px
         background: $white
       &::-webkit-scrollbar-thumb
-        height: 0px
+        height: 1px
         background: $green
 
 @media screen and (max-width: 374px)
