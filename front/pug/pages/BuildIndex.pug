@@ -4,7 +4,10 @@ button.menu-btn menu
     button.btn-popup-win  3 - 0
     button.btn-popup-lose  0 - 3
     button.btn-popup-other  others
-.fav-page.loading
+    button.btn-lng en
+    button.btn-auth auth
+    button.btn-timer timer
+.fav-page.loading#click-pick
     .spinner-overlay
         .spinner
     .welcome
@@ -54,11 +57,11 @@ button.menu-btn menu
                 .stage__card.top-card._open
                     .stage__card-icon
                     .stage__card-btn
-                    .stage__card-text(data-translate="chooseTeam") обери команду
+                    .stage__card-text(data-translate="popupLoseTitle") обери команду
                 .stage__card.top-card._selected
                     .stage__card-icon
                     .stage__card-btn
-                    .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                    .stage__card-text(data-translate="popupLoseTitle") Команда <br> «Chinggis Warriors»
                 .stage__decor vs
             .stage__bottom
                 .stage__title.title(data-translate="stageTitle") команди, які пройдуть далі
@@ -66,37 +69,36 @@ button.menu-btn menu
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
-
+                        .stage__card-text(data-translate="popupLoseTitle") обери команду
                     .stage__card._win
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="heroic") Команда <br> «Chinggis Warriors»
 
                     .stage__card._done
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="complexity") Команда <br> «Chinggis Warriors»
 
                     .stage__card._lose
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="B8") Команда <br> «Chinggis Warriors»
 
                     .stage__card._selected
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="wildcard") Команда <br> «Chinggis Warriors»
 
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="flyQuest") обери команду
 
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="lynnVision") обери команду
 
         .stage(data-stage="2")
             .timer
@@ -118,11 +120,11 @@ button.menu-btn menu
                 .stage__card.top-card._open
                     .stage__card-icon
                     .stage__card-btn
-                    .stage__card-text(data-translate="chooseTeam") обери команду
+                    .stage__card-text(data-translate="NRG") обери команду
                 .stage__card.top-card._selected
                     .stage__card-icon
                     .stage__card-btn
-                    .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                    .stage__card-text(data-translate="chinggisWarriors") Команда <br> «Chinggis Warriors»
                 .stage__decor vs
             .stage__bottom
                 .stage__title.title(data-translate="stageTitle") команди, які пройдуть далі
@@ -130,37 +132,37 @@ button.menu-btn menu
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="nemiga") обери команду
 
                     .stage__card._win
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="imperial") Команда <br> «Chinggis Warriors»
 
                     .stage__card._done
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="fluxo") Команда <br> «Chinggis Warriors»
 
                     .stage__card._lose
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="metizport") Команда <br> «Chinggis Warriors»
 
                     .stage__card._selected
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="OG") Команда <br> «Chinggis Warriors»
 
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="bestia") обери команду
 
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="tyloo") обери команду
 
         .stage(data-stage="3")
             .timer
@@ -182,11 +184,11 @@ button.menu-btn menu
                 .stage__card.top-card._open
                     .stage__card-icon
                     .stage__card-btn
-                    .stage__card-text(data-translate="chooseTeam") обери команду
+                    .stage__card-text(data-translate="falcons") обери команду
                 .stage__card.top-card._selected
                     .stage__card-icon
                     .stage__card-btn
-                    .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                    .stage__card-text(data-translate="faze") Команда <br> «Chinggis Warriors»
                 .stage__decor vs
             .stage__bottom
                 .stage__title.title(data-translate="stageTitle") команди, які пройдуть далі
@@ -194,37 +196,37 @@ button.menu-btn menu
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="3DMAX") обери команду
 
                     .stage__card._win
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="virtusPro") Команда <br> «Chinggis Warriors»
 
                     .stage__card._done
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="furia") Команда <br> «Chinggis Warriors»
 
                     .stage__card._lose
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="MIBR") Команда <br> «Chinggis Warriors»
 
                     .stage__card._selected
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                        .stage__card-text(data-translate="PaiN") Команда <br> «Chinggis Warriors»
 
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="theMongolz") обери команду
 
                     .stage__card._open
                         .stage__card-icon
                         .stage__card-btn
-                        .stage__card-text(data-translate="chooseTeam") обери команду
+                        .stage__card-text(data-translate="natusVincere") обери команду
 
         .playoff(data-stage="4")
             .playoff__btn-right
@@ -252,48 +254,48 @@ button.menu-btn menu
                             .playoff__decor vs
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="chinggisWarriors") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="natusVincere") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                         .playoff__choose(data-choose-semifinal="1")
                             .playoff__decor vs
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="theMongolz") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
-                                .playoff__choose-team-btn
-
-                        .playoff__choose(data-choose-semifinal="2")
-                            .playoff__decor vs
-                            .playoff__choose-team._done
-                                .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
-                                .playoff__choose-team-btn
-
-                            .playoff__choose-team._done
-                                .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="complexity") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                         .playoff__choose(data-choose-semifinal="2")
                             .playoff__decor vs
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="virtusPro") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="theMongolz") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-btn
+
+                        .playoff__choose(data-choose-semifinal="2")
+                            .playoff__decor vs
+                            .playoff__choose-team._done
+                                .playoff__choose-team-icon
+                                .playoff__choose-team-text(data-translate="lynnVision") Команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-btn
+
+                            .playoff__choose-team._done
+                                .playoff__choose-team-icon
+                                .playoff__choose-team-text(data-translate="lynnVision") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                 .playoff__stage(data-playoff-stage="2")
@@ -305,12 +307,12 @@ button.menu-btn menu
                             .playoff__decor-bottom
                             .playoff__choose-team._selected
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                                .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
                             .playoff__choose-team._open
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") обрати команду
+                                .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                                 .playoff__choose-team-btn
 
                         .playoff__choose(data-choose-final="2")
@@ -319,12 +321,12 @@ button.menu-btn menu
                             .playoff__decor-bottom
                             .playoff__choose-team._open
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") обрати команду
+                                .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                                 .playoff__choose-team-btn
 
                             .playoff__choose-team._open
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") обрати команду
+                                .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                                 .playoff__choose-team-btn
 
                 .playoff__stage(data-playoff-stage="3")
@@ -336,22 +338,22 @@ button.menu-btn menu
                             .playoff__decor-bottom.long-line
                             .playoff__choose-team._open
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") обреи команду
+                                .playoff__choose-team-text(data-translate="popupLoseTitle") обреи команду
                                 .playoff__choose-team-btn
 
                             .playoff__choose-team._open
                                 .playoff__choose-team-icon
-                                .playoff__choose-team-text(data-translate="chooseTeam") обери команду
+                                .playoff__choose-team-text(data-translate="popupLoseTitle") обери команду
                                 .playoff__choose-team-btn
 
                 .playoff__stage(data-playoff-stage="4")
-                    .playoff__stage-title(data-translate="final") Переможець
+                    .playoff__stage-title(data-translate="finalPlayoff") Переможець
                     .playoff__wrap
-                        .playoff__card._open
+                        .playoff__card._selected
                             .playoff__decor-top.long-line
                             .playoff__card-icon
                             .playoff__card-btn
-                            .playoff__card-text(data-translate="chooseTeam") обери команду
+                            .playoff__card-text(data-translate="chinggisWarriors") обери команду
         .predictor__btn.btn.unauth-msg #[span.btn-text(data-translate="signBtn") Авторизуйся ]
         .predictor__btn.btn.part-btn.hide #[span.btn-text(data-translate="partBtn")  зробити прогноз ]
         .predictor__checkin(data-translate="predictorCheckIn") Прогноз прийнято. Ти можеш змінити його до початку першого матчу на цьому етапі. Чекай результати
@@ -473,194 +475,254 @@ button.menu-btn menu
                 .playoff__popup-scroll
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") обрати команду
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._selected
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._selected
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._selected
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._selected
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._selected
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._selected
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-btn
+                    .playoff__choose-team._open
+                        .playoff__choose-team-icon
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                         .playoff__choose-team-btn
                 .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]
             .playoff__popup.lose-popup.hide
                 .playoff__popup-close
-                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle")] Вибери команду #[span.popup-title-score 0 - 3 ]
+                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle") Вибери команду] #[span.popup-title-score 0 - 3 ]
                 .playoff__decor vs
                 .playoff__popup-scroll
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") обрати команду
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                         .playoff__choose-team-btn
                 .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]
             .playoff__popup.win-popup.hide
                 .playoff__popup-close
-                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle")] Вибери команду #[span.popup-title-score 3 - 0]
+                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle") Вибери команду] #[span.popup-title-score 3 - 0]
                 .playoff__decor vs
                 .playoff__popup-scroll
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._selected
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") команда <br> «Chinggis Warriors»
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                         .playoff__choose-team-btn
                     .playoff__choose-team._open
                         .playoff__choose-team-icon
-                        .playoff__choose-team-text(data-translate="chooseTeam") обрати команду
+                        .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                         .playoff__choose-team-btn
                 .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]

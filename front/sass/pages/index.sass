@@ -129,6 +129,7 @@ body
   flex-direction: column
   align-items: center
   overflow: hidden
+  padding-bottom: 40px
 
 
 .welcome
@@ -379,6 +380,7 @@ body
   &__card
     width: 140px
     height: 140px
+    padding: 0 5px
     border-radius: 16px
     display: flex
     align-items: center
@@ -506,6 +508,8 @@ body
   border: 4px solid rgba($white, .1)
   background: rgba($blue, .7) url("../img/drop-bg.png") repeat 0 0/cover
   padding: 8px 15px
+  z-index: 3
+  margin: 0 auto
   &__icon
     width: 73px
     height: 73px
@@ -612,7 +616,7 @@ body
       padding: 5px 14px 5px 20px
       &-text
         font-family: $font-favbet-display-cond-med
-        font-size: 14px
+        font-size: 13px
       &-icon
         width: 72px
         height: 34px
@@ -1002,6 +1006,17 @@ body
   .playoff
     display: flex
     flex-direction: column
+    position: relative
+    &::before
+      content: ""
+      width: 100%
+      height: 50px
+      background: linear-gradient(0deg, #00003d 0%, transparent 100%)
+      position: absolute
+      bottom: 56px
+      left: 0
+      z-index: 2
+      pointer-events: none
     &__decor
       transform: scale(1.7) rotate(25deg)
       top: auto
@@ -1019,6 +1034,7 @@ body
           display: flex
       &-btn
         margin-top: 15px
+        z-index: 3
       &-close
         width: 24px
         height: 24px
@@ -1068,6 +1084,17 @@ body
         align-items: center
         flex-wrap: wrap
         gap: 15px
+        overflow: auto
+        max-height: 550px
+        position: relative
+        scrollbar-width: auto
+        &::-webkit-scrollbar-thumb
+          background: $green
+          width: 4px
+        &::-webkit-scrollbar
+          background: rgba($green, .2)
+          width: 4px
+
     .others-popup
       .playoff
         &__popup

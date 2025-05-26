@@ -1,6 +1,6 @@
 (function () {
 
-    const apiURL = 'https://fav-prom.com/api_your_promo'
+    const apiURL = 'https://fav-prom.com/api_click_pick'
 
     const stagesData = [
         { data: new Date("2025-05-20T00:00:00+03:00") },
@@ -9,9 +9,13 @@
         { data: new Date("2025-06-05T00:00:00+03:00") }
     ];
 
-    const currentDate = new Date("2025-06-05T00:00:00+03:00");
+    const currentDate = new Date("2025-04-05T00:00:00+03:00");
 
-    let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
+    // let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
+
+    let currentStage = Number(sessionStorage.getItem("currentDate"))
+
+    console.log(currentStage);
 
     const mainPage = document.querySelector(".fav-page"),
         unauthMsgs = document.querySelectorAll('.unauth-msg'),
@@ -20,7 +24,8 @@
         loader = document.querySelector(".spinner-overlay"),
         stages = document.querySelectorAll("[data-stage]"),
         stagesTabs = document.querySelectorAll("[data-stage-tab]"),
-        playoffStage = document.querySelector(".playoff")
+        playoffStage = document.querySelector(".playoff"),
+        results = document.querySelector(".results");
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -34,7 +39,7 @@
 
     let loaderBtn = false
 
-    let locale = "en"
+    let locale = sessionStorage.getItem("locale") ?? "en"
 
     if (ukLeng) locale = 'uk';
     if (enLeng) locale = 'en';
@@ -45,7 +50,7 @@
 
     let i18nData = {};
     const translateState = true;
-    let userId = null;
+    let userId = sessionStorage.getItem('userId') ?? 100300268;
 
     const request = function (link, extraOptions) {
         return fetch(apiURL + link, {
@@ -308,7 +313,7 @@
         }
 
         function quickCheckAndRender() {
-            // checkUserAuth();
+            checkUserAuth();
 
             setTimeout(hideLoader, 1000)
 
@@ -480,7 +485,7 @@
             .then(json => {
                 i18nData = json;
                 translate();
-                const targetNode = document.getElementById("goals-or-zeros-leage");
+                const targetNode = document.getElementById("click-pick");
                 const mutationObserver = new MutationObserver(function (mutations) {
                     mutationObserver.disconnect();
                     translate();
@@ -494,9 +499,7 @@
             });
     }
 
-    init()
-
-    // loadTranslations().then(init) запуск ініту сторінки
+    loadTranslations().then(init)
 
     //test
 
@@ -504,28 +507,28 @@
         document.body.classList.toggle('dark');
     });
 
-    // const lngBtn = document.querySelector(".lng-btn")
-    //
-    // lngBtn.addEventListener("click", () => {
-    //     if (sessionStorage.getItem("locale")) {
-    //         sessionStorage.removeItem("locale");
-    //     } else {
-    //         sessionStorage.setItem("locale", "hr");
-    //     }
-    //     window.location.reload();
-    // });
+    const lngBtn = document.querySelector(".btn-lng")
+
+    lngBtn.addEventListener("click", () => {
+        if (sessionStorage.getItem("locale")) {
+            sessionStorage.removeItem("locale");
+        } else {
+            sessionStorage.setItem("locale", "uk");
+        }
+        window.location.reload();
+    });
 
 
-    // const authBtn = document.querySelector(".auth-btn")
-    //
-    // authBtn.addEventListener("click", () =>{
-    //     if(userId){
-    //         sessionStorage.removeItem("userId")
-    //     }else{
-    //         sessionStorage.setItem("userId", "11111222")
-    //     }
-    //     window.location.reload()
-    // });
+    const authBtn = document.querySelector(".btn-auth")
+
+    authBtn.addEventListener("click", () =>{
+        if(userId){
+            sessionStorage.removeItem("userId")
+        }else{
+            sessionStorage.setItem("userId", "100300268")
+        }
+        window.location.reload()
+    });
 
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".menu-btn")?.addEventListener("click", () => {
@@ -575,5 +578,18 @@
         popupLose.classList.add('hide');
         popupOther.classList.remove('hide');
     })
+
+    document.querySelector('.btn-timer')?.addEventListener('click', () => {
+        const stage1 = '1'
+        const stage2 = '4'
+
+        const savedDate = sessionStorage.getItem("currentDate");
+
+        const newDate = savedDate === stage2 ? stage1 : stage2;
+        sessionStorage.setItem("currentDate", newDate);
+
+        location.reload();
+    });
+
 
 })();
