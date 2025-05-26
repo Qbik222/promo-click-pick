@@ -27,8 +27,8 @@
         playoffStage = document.querySelector(".playoff"),
         results = document.querySelector(".results"),
         predictor = document.querySelector(".predictor"),
-        playoffPredictor = predictor.querySelector(".playoff");
-
+        playoffPredictor = predictor.querySelector(".playoff"),
+        teamTextPopups = document.querySelectorAll('.playoff__choose-team-text')
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
 
@@ -38,6 +38,94 @@
         el.innerHTML = i18nData[dataAttr] || '*----NEED TO BE TRANSLATED----*   key:  ' + dataAttr;
         el.removeAttribute('data-translate');
     });
+
+
+    const teams = [
+        { team: "Complexity", dataAttr: "complexity" },
+        { team: "Falcons", dataAttr: "falcons" },
+        { team: "Vitality", dataAttr: "vitality" },
+        { team: "Heroic", dataAttr: "heroic" },
+        { team: "Faze", dataAttr: "faze" },
+        { team: "Spirit", dataAttr: "spirit" },
+        { team: "B8", dataAttr: "B8" },
+        { team: "3DMAX", dataAttr: "3DMAX" },
+        { team: "MOUZ", dataAttr: "MOUZ" },
+        { team: "Wildcard", dataAttr: "wildcard" },
+        { team: "Virtus.pro", dataAttr: "virtusPro" },
+        { team: "The Mongolz", dataAttr: "theMongolz" },
+        { team: "FlyQuest", dataAttr: "flyQuest" },
+        { team: "Furia", dataAttr: "furia" },
+        { team: "Aurora", dataAttr: "aurora" },
+        { team: "Lynn Vision", dataAttr: "lynnVision" },
+        { team: "MIBR", dataAttr: "MIBR" },
+        { team: "Natus Vincere", dataAttr: "natusVincere" },
+        { team: "NRG", dataAttr: "NRG" },
+        { team: "PaiN", dataAttr: "PaiN" },
+        { team: "G2", dataAttr: "G2" },
+        { team: "Chinggis Warriors", dataAttr: "chinggisWarriors" },
+        { team: "M80", dataAttr: "M80" },
+        { team: "Liquid", dataAttr: "liquid" },
+        { team: "Nemiga", dataAttr: "nemiga" },
+        { team: "Imperial", dataAttr: "imperial" },
+        { team: "Fluxo", dataAttr: "fluxo" },
+        { team: "Metizport", dataAttr: "metizport" },
+        { team: "OG", dataAttr: "OG" },
+        { team: "Bestia", dataAttr: "bestia" },
+        { team: "Tyloo", dataAttr: "tyloo" }
+    ];
+
+    let bigLose = null
+    let bigWin = null
+
+    const teamsWin = [];
+
+    const stagesResult = [
+        {
+            defautValue: true,
+            teamsBet:[
+                { team: "Complexity", dataAttr: "complexity", outcome: true },
+                { team: "Falcons", dataAttr: "falcons", outcome: true},
+                { team: "Vitality", dataAttr: "vitality", outcome: true },
+                { team: "Heroic", dataAttr: "heroic", outcome: true },
+                { team: "Faze", dataAttr: "faze", outcome: true },
+                { team: "Spirit", dataAttr: "spirit", outcome: true },
+                { team: "B8", dataAttr: "B8", outcome: true },
+            ],
+            bigWin: { team: "PaiN", dataAttr: "PaiN", outcome: true },
+            bigLose: { team: "NRG", dataAttr: "NRG", outcome: true }
+        },
+        {
+            defautValue: true,
+            teamsBet:[
+                { team: "Complexity", dataAttr: "complexity", outcome: true },
+                { team: "Falcons", dataAttr: "falcons", outcome: true},
+                { team: "Vitality", dataAttr: "vitality", outcome: true },
+                { team: "Heroic", dataAttr: "heroic", outcome: true },
+                { team: "Faze", dataAttr: "faze", outcome: true },
+                { team: "Spirit", dataAttr: "spirit", outcome: true },
+                { team: "B8", dataAttr: "B8", outcome: true },
+            ],
+            bigWin: { team: "PaiN", dataAttr: "PaiN", outcome: true },
+            bigLose: { team: "NRG", dataAttr: "NRG", outcome: true }
+        },
+        {
+            defautValue: true,
+            teamsBet:[
+                { team: "Complexity", dataAttr: "complexity", outcome: true },
+                { team: "Falcons", dataAttr: "falcons", outcome: true},
+                { team: "Vitality", dataAttr: "vitality", outcome: true },
+                { team: "Heroic", dataAttr: "heroic", outcome: true },
+                { team: "Faze", dataAttr: "faze", outcome: true },
+                { team: "Spirit", dataAttr: "spirit", outcome: true },
+                { team: "B8", dataAttr: "B8", outcome: true },
+            ],
+            bigWin: { team: "PaiN", dataAttr: "PaiN", outcome: true },
+            bigLose: { team: "NRG", dataAttr: "NRG", outcome: true }
+        }
+
+    ]
+
+
 
     let loaderBtn = false
 
@@ -52,7 +140,7 @@
 
     let i18nData = {};
     const translateState = true;
-    let userId = sessionStorage.getItem('userId') ?? 100300268;
+    let userId = Number(sessionStorage.getItem('userId')) ?? 77777779;
 
     const request = function (link, extraOptions) {
         return fetch(apiURL + link, {
@@ -69,22 +157,43 @@
             .catch(err => {
                 console.error('API request failed:', err);
 
-                reportError(err);
+                // reportError(err);
 
-                document.querySelector('.fav-page').style.display = 'none';
-                if (window.location.href.startsWith("https://www.favbet.hr/")) {
-                    window.location.href = '/promocije/promocija/stub/';
-                } else {
-                    window.location.href = '/promos/promo/stub/';
-                }
+                // document.querySelector('.fav-page').style.display = 'none';
+                // if (window.location.href.startsWith("https://www.favbet.hr/")) {
+                //     window.location.href = '/promocije/promocija/stub/';
+                // } else {
+                //     window.location.href = '/promos/promo/stub/';
+                // }
 
                 return Promise.reject(err);
             });
 
     }
 
-    function setCurrentStage(){
+    function renderTeamBlocks(popupAttr, teams) {
+        const popup = document.querySelector(`[data-popup="${popupAttr}"]`);
+        console.log(popup)
+        const container = popup.querySelector('.playoff__popup-scroll');
 
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        teams.forEach(({ dataAttr }) => {
+            const teamBlock = document.createElement('div');
+            teamBlock.className = 'playoff__choose-team _open'; // можеш динамічно змінювати на _selected
+
+            teamBlock.innerHTML = `
+            <div class="playoff__choose-team-icon"></div>
+            <div class="playoff__choose-team-text" data-translate="${dataAttr}" data-team="${dataAttr}">
+            </div>
+            <div class="playoff__choose-team-btn"></div>
+        `;
+
+            container.appendChild(teamBlock);
+        });
+        translate()
     }
 
     function hideLoader(){
@@ -102,24 +211,16 @@
 
             if (!userId) {
                 hideElements(participateBtns);
-                hideElements(redirectBtns);
                 showElements(unauthMsgs);
                 hideLoader();
                 return Promise.resolve(false);
+            }else{
+                showElements(participateBtns);
+                hideElements(unauthMsgs);
             }
 
             hideElements(unauthMsgs);
-
-            return request(`/favuser/${userId}?nocache=1`).then(res => {
-                if (res.userid) {
-                    hideElements(participateBtns);
-                    showElements(redirectBtns);
-                } else {
-                    showElements(participateBtns);
-                    hideElements(redirectBtns);
-                }
-                hideLoader();
-            });
+            hideLoader();
         }, loadTime);
     }
 
@@ -258,6 +359,81 @@
         return "**" + userId.toString().slice(2);
     }
 
+    function setStatePickStage(stage){
+        const stageCardsWrap = stage.querySelector('[data-cards-wrap="stage"]')
+        if(!stageCardsWrap) return
+        const stageCards = stageCardsWrap.querySelectorAll('.stage__card');
+        const stageCardWin = stage.querySelector('[data-big-stage="bigWin"]');
+        const stageCardLose = stage.querySelector('[data-big-stage="bigLose"]');
+        const stageCardWinName = stageCardWin.querySelector('.stage__card-text');
+        const stageCardLoseName = stageCardLose.querySelector('.stage__card-text');
+
+        const stageNum = Number(stage.getAttribute('data-stage'));
+        let stageState = stage.getAttribute('data-pick-stage');
+        const stageResultData = stagesResult[stageNum -1]
+
+        let othersTeams = stageResultData.teamsBet
+        let bigWinTeam = stageResultData.bigWin
+        let bigLoseTeam = stageResultData.bigLose
+
+        stageCardWin.classList.remove('_open', '_selected', '_lose', '_win');
+        stageCardLose.classList.remove('_open', '_selected', '_lose', '_win');
+
+        if(stageState === "done"){
+            console.log(stageCards)
+            stageCards.forEach((card, i) => {
+                const teamName = card.querySelector('.stage__card-text');
+                card.classList.remove('_open', '_selected', '_lose', '_win', "_done");
+                if(stageResultData.defautValue) card.classList.add('_done');
+
+                teamName.setAttribute('data-team', othersTeams[i].dataAttr);
+                teamName.setAttribute('data-translate', othersTeams[i].dataAttr);
+            });
+            stageCardWinName.setAttribute('data-team', bigWinTeam.dataAttr);
+            stageCardWinName.setAttribute('data-translate', bigWinTeam.dataAttr);
+            stageCardLoseName.setAttribute('data-team', bigLoseTeam.dataAttr);
+            stageCardLoseName.setAttribute('data-translate', bigLoseTeam.dataAttr);
+
+
+            if(stageResultData.defautValue){
+                stageCardWin.classList.add('_done');
+                stageCardLose.classList.add('_done');
+            }else{
+                if(bigWinTeam.outcome){
+                    stageCardWin.classList.add('_win');
+                }else{
+                    stageCardWin.classList.add('_lose');
+                }
+                if(bigLoseTeam.outcome){
+                    stageCardWin.classList.add('_win');
+                }else{
+                    stageCardWin.classList.add('_lose');
+                }
+            }
+
+
+
+        }
+        if(stageState === "active"){
+            stageCards.forEach((card, i) => {
+                const teamName = card.querySelector('.stage__card-text');
+                card.classList.remove('_open', '_selected', '_lose', '_win', "_done");
+                card.classList.add('_open');
+
+                teamName.setAttribute('data-translate', "popupLoseTitle" );
+
+            })
+            stageCardWin.classList.add("_open")
+            stageCardLose.classList.add("_open")
+
+            stageCardWinName.setAttribute('data-translate', "popupLoseTitle");
+            stageCardLoseName.setAttribute('data-translate', "popupLoseTitle");
+        }
+        translate()
+
+
+    }
+
     function getPrizeTranslationKey(place, week) {
         if (place <= 3) return `prize_${week}-${place}`;
         if (place <= 10) return `prize_${week}-4-10`;
@@ -316,47 +492,78 @@
 
         function quickCheckAndRender() {
             checkUserAuth();
+            request('/stage/').then((res) => {
+                const userStages = res.find(user => user.userid === userId)
+
+                if(userStages) {
+                    stagesResult.forEach((stage, i) =>{
+                        if(userStages[`stage${i + 1}Bet`]){
+                            stagesResult[i] = {
+                                teamsBet: [...userStages[`stage${i + 1}Bet`].teamsBet],
+                                bigWin: userStages[`stage${i + 1}Bet`].bigWinner,
+                                bigLose: userStages[`stage${i + 1}Bet`].bigLoser
+                            }
+                        }
+                    })
+                }
+            }).then((res) => {
+                stages.forEach((stage, i) => {
+
+                    currentStage > stages.length - 1 ? currentStage = stages.length - 1 : null;
+                    console.log(currentStage);
+
+                    stage.classList.toggle('_active', i === currentStage);
+                    stagesTabs[i].classList.toggle('_active', i === currentStage);
+
+                    const top = stage.querySelector(".stage__top");
+                    const bottom = stage.querySelector(".stage__bottom");
+                    const timer = stage.querySelector(".timer");
+                    const playoffWrap = stage.querySelector(".playoff__wrapper");
+
+                    if (i > currentStage) {
+                        top?.classList.add("hide");
+                        bottom?.classList.add("hide");
+                        playoffWrap?.classList.add("hide");
+                        timer?.classList.remove("hide");
+                        stage.setAttribute("data-pick-stage", "lock")
+                    } else {
+                        top?.classList.remove("hide");
+                        bottom?.classList.remove("hide");
+                        playoffWrap?.classList.remove("hide");
+                        timer?.classList.add("hide");
+                    }
+
+                    if(i === currentStage) {
+                        stage.setAttribute("data-pick-stage", "active")
+                    }
+                    if(i < currentStage) {
+                        stage.setAttribute("data-pick-stage", "done")
+                        stage.classList.add("_done")
+                    }
+                    setStatePickStage(stage);
+                });
+                stagesTabs.forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        if (e.target.closest('._active')) return
+                        const targetStageValue = tab.getAttribute('data-stage-tab');
+                        const targetStage = document.querySelector(`[data-stage="${targetStageValue}"]`);
+
+                        stages.forEach(stage => stage.classList.remove('_active'));
+                        stagesTabs.forEach(t => t.classList.remove('_active'));
+
+                        tab.classList.add('_active');
+                        targetStage?.classList.add('_active');
+                    });
+                });
+            })
+
+            renderTeamBlocks('bigWin', teams);
+            renderTeamBlocks('bigLose', teams);
+            renderTeamBlocks('Others', teams);
 
             setTimeout(hideLoader, 1000)
 
-            stages.forEach((stage, i) => {
 
-                currentStage > stages.length - 1 ? currentStage = stages.length - 1 : null;
-                console.log(currentStage);
-
-                stage.classList.toggle('_active', i === currentStage);
-                stagesTabs[i].classList.toggle('_active', i === currentStage);
-
-                const top = stage.querySelector(".stage__top");
-                const bottom = stage.querySelector(".stage__bottom");
-                const timer = stage.querySelector(".timer");
-                const playoffWrap = stage.querySelector(".playoff__wrapper");
-
-                if (i > currentStage) {
-                    top?.classList.add("hide");
-                    bottom?.classList.add("hide");
-                    playoffWrap?.classList.add("hide");
-                    timer?.classList.remove("hide");
-                } else {
-                    top?.classList.remove("hide");
-                    bottom?.classList.remove("hide");
-                    playoffWrap?.classList.remove("hide");
-                    timer?.classList.add("hide");
-                }
-            });
-            stagesTabs.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    if (e.target.closest('._active')) return
-                    const targetStageValue = tab.getAttribute('data-stage-tab');
-                    const targetStage = document.querySelector(`[data-stage="${targetStageValue}"]`);
-
-                    stages.forEach(stage => stage.classList.remove('_active'));
-                    stagesTabs.forEach(t => t.classList.remove('_active'));
-
-                    tab.classList.add('_active');
-                    targetStage?.classList.add('_active');
-                });
-            });
 
             // console.log(playoffStage.getBoundingClientRect().left - 10)
 
@@ -533,7 +740,7 @@
         if(userId){
             sessionStorage.removeItem("userId")
         }else{
-            sessionStorage.setItem("userId", "100300268")
+            sessionStorage.setItem("userId", "77777779")
         }
         window.location.reload()
     });
