@@ -236,7 +236,6 @@ body
       background: url("../img/predictor/bg-tab.png") no-repeat 50% 0/cover
     @media screen and (max-width: 600px)
       background: url("../img/predictor/bg-mob.png") no-repeat 50% 50%/cover
-
   &__title
     font-family: $font-favbet-display-cond-bold
     font-size: 36px
@@ -309,6 +308,13 @@ body
       background: $magenta
       padding: 4px 9px 4px 8px
       border-radius: 3px
+  .playoff
+    &._lock
+      width: fit-content
+      margin: 0 auto
+      &::before
+        content: none
+
 
 
 .stage
@@ -1266,6 +1272,18 @@ body.dark
     transform: scale(.8)
   100%
     transform: scale(1)
+
+//en
+.fav-page.en
+  .welcome
+    background: url("../img/welcome/bg-desc-en.jpg") no-repeat 50% 0/cover
+    background-size: 1365px 767px
+    @media screen and (max-width: 1300px)
+      background: url("../img/welcome/bg-tab-en.jpg") no-repeat 50% 0/cover
+      background-size: 768px 432px
+    @media screen and (max-width: 650px)
+      background: url("../img/welcome/bg-mob-en.jpg") no-repeat 50% 0/cover
+      background-size: 100% auto
 
 
 // dark

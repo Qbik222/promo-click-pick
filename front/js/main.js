@@ -25,7 +25,9 @@
         stages = document.querySelectorAll("[data-stage]"),
         stagesTabs = document.querySelectorAll("[data-stage-tab]"),
         playoffStage = document.querySelector(".playoff"),
-        results = document.querySelector(".results");
+        results = document.querySelector(".results"),
+        predictor = document.querySelector(".predictor"),
+        playoffPredictor = predictor.querySelector(".playoff");
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -377,7 +379,13 @@
 
             };
 
-            updatePlayoffPosition();
+            if(currentStage < 3){
+                playoffPredictor.classList.add('_lock');
+            }else{
+                updatePlayoffPosition();
+            }
+
+
 
             window.addEventListener("orientationchange", updatePlayoffPosition);
             window.addEventListener("resize", updatePlayoffPosition);
