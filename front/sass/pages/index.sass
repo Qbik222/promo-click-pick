@@ -1013,12 +1013,19 @@ body
     display: flex
     flex-direction: column
     position: relative
+    width: fit-content
+    bottom: auto
+    left: auto
+    top: auto
+    right: auto
+    margin: auto 0
     &::before
       content: ""
       width: 100%
       height: 50px
       background: linear-gradient(0deg, #00003d 0%, transparent 100%)
       position: absolute
+      top: auto
       bottom: 56px
       left: 0
       z-index: 2
@@ -1172,13 +1179,15 @@ body
       display: flex
       flex-direction: column
       gap: 15px
+      color: $white
+      font-family: $font-favbet-text-reg
       table
         border-spacing: 0
         border-color: $white
         tr, td
           border-color: $white
           color: $white
-        font-family: $font-favbet-text-reg
+          font-family: $font-favbet-text-reg
 
         td
           border: none
@@ -1329,9 +1338,23 @@ body.dark
     &__card
       background: rgba($dark, 0.5) url("../img/predictor/stage/card-light-dark.png") no-repeat 0 -5px/contain
   .playoff
+    &::before
+      background: linear-gradient(270deg, $dark 0%, transparent 100%)
     &__choose
       &-team
         background: radial-gradient(81.92% 81.92% at 50% 35.35%, rgba(108, 108, 108, 0.41) 0%, rgba(169, 169, 169, 0.00) 54.33%), rgba(25, 26, 35, 0.50)
+  .popups
+    background: rgba($dark, 0.85)
+  .fav-page.en
+    .welcome
+      background: url("../img/welcome/bg-desc-dark-en.jpg") no-repeat 50% 0/cover
+      background-size: 1365px 767px
+      @media screen and (max-width: 1300px)
+        background: url("../img/welcome/bg-tab-dark-en.jpg") no-repeat 50% 0/cover
+        background-size: 768px 432px
+      @media screen and (max-width: 650px)
+        background: url("../img/welcome/bg-mob-dark-en.jpg") no-repeat 50% 0/cover
+        background-size: 100% auto
 
 
 
