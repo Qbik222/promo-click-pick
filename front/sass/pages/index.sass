@@ -102,6 +102,9 @@ body
     background-size: 100% 100%
     width: 120px
     height: 70px
+  &._lock
+    opacity: .3
+    pointer-events: none
 
   &:hover
     cursor: pointer
@@ -398,6 +401,10 @@ body
     border: 1px solid rgba($white, .5)
     flex-direction: column
     background: rgba($blue, .5) url("../img/predictor/stage/card-light.png") no-repeat 0 -25px/contain
+    transition: transform .3s ease-in-out
+    &:hover
+      cursor: pointer
+      transform: scale(1.02)
     &-icon
       width: 90px
       height: 43px
@@ -479,6 +486,7 @@ body
           &-text
             color: $white
     &._done
+      pointer-events: none
       gap: 10px
       .stage
         &__card
@@ -489,6 +497,7 @@ body
           &-text
             color: $white
     &._lose
+      pointer-events: none
       .stage
         &__card
           &-icon
@@ -498,6 +507,7 @@ body
           &-text
             color: $orange
     &._win
+      pointer-events: none
       .stage
         &__card
           &-icon
@@ -619,19 +629,30 @@ body
       width: 280px
       height: 50px
       gap: 6px
+      pointer-events: initial
       background: radial-gradient(81.92% 81.92% at 50% 35.35%, rgba(0, 79, 255, 0.41) 0%, rgba(13, 80, 255, 0.00) 54.33%), rgba(0, 0, 61, 0.50)
       border: 1px solid rgba($white, .5)
       padding: 5px 14px 5px 20px
+      transition: transform .3s ease-in-out
+      &:hover
+        cursor: pointer
+        transform: scale(1.02)
       &-text
         font-family: $font-favbet-display-cond-med
         font-size: 13px
+        pointer-events: none
       &-icon
         width: 72px
         height: 34px
+        pointer-events: none
       &-btn
         width: 22px
         height: 22px
         margin-left: auto
+        pointer-events: none
+      &._lock
+        opacity: .5
+        pointer-events: none
       &._open
         border: 1px dashed rgba($green, .5)
         gap: 10px
@@ -1103,6 +1124,8 @@ body
         max-height: 550px
         position: relative
         scrollbar-width: auto
+        padding-bottom: 30px
+        //pointer-events: none
         &::-webkit-scrollbar-thumb
           background: $green
           width: 4px
