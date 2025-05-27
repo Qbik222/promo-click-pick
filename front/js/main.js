@@ -13,9 +13,9 @@
 
     // let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
 
-    let currentStage = Number(sessionStorage.getItem("currentDate"))
+    // let currentStage = Number(sessionStorage.getItem("currentDate"))
 
-    // let currentStage = 4
+    let currentStage = 3
 
     console.log(currentStage);
 
@@ -35,6 +35,26 @@
         popupsWrap = document.querySelector(".popups"),
         makePredictBtn = document.querySelector('.make-predict'),
         predictorCheckIn = document.querySelector('.predictor__checkin');
+
+    const playoffStages = document.querySelector('[data-playoff-stage]'),
+        quarterFinals = document.querySelector('[data-playoff-stage="1"]'),
+        semiFinals = document.querySelector('[data-playoff-stage="2"]'),
+        finals = document.querySelector('[data-playoff-stage="3"]'),
+        winner = document.querySelector('[data-playoff-stage="4"]'),
+        quarterFinalsPairs = document.querySelectorAll('.playoff__choose[data-choose-semifinal]'),
+        semiFinalsPairs = document.querySelectorAll('.playoff__choose[data-choose-final]'),
+        winnerPairs = document.querySelectorAll('.playoff__choose[data-choose-winner]'),
+        semiFinalsPairsBtns = document.querySelectorAll('.playoff__choose-team[data-choose-semifinal]'),
+        finalsPairsBtns = document.querySelectorAll('.playoff__choose-team[data-choose-final]'),
+        winnerCard = document.querySelector('.playoff__card'),
+        playoffSemiFinalPopup = document.querySelector('[data-popup="playoffSemiFinal"]'),
+        playoffFinalPopup = document.querySelector('[data-popup="playoffFinal"]'),
+        playoffWinnerPopup= document.querySelector('[data-popup="winner"]');
+
+    let semiFinalsTeams = []
+    let finalsTeams = []
+    let winners = []
+
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -144,6 +164,8 @@
         }
 
     ]
+
+    let quoterFinalsData = [...stagesResult[2].teamsBet, stagesResult[2].bigWin ]
 
     let loaderBtn = false
 
@@ -311,13 +333,45 @@
         checkUserAuth()
     }
 
+    function setPlayoff(quarterFinals, semiFinals, finals, winner){
+
+
+
+        const quarterFinalsCards = quarterFinals.querySelectorAll(".playoff__choose-team");
+        const semiFinalsCards = semiFinals.querySelectorAll(".playoff__choose-team");
+        const FinalsCards = finals.querySelectorAll(".playoff__choose-team");
+        const winnerCards = winner.querySelectorAll(".playoff__choose-team");
+
+        console.log(semiFinalsCards);
+
+        quarterFinalsCards.forEach((card, i) => {
+
+            const teamCardName = card.querySelector(".playoff__choose-team-text");
+
+            const team = quoterFinalsData[i];
+
+            teamCardName.setAttribute("data-team", team.dataAttr);
+            card.setAttribute("data-team", team.dataAttr);
+            teamCardName.textContent = translateKey(team.dataAttr);
+
+            card.classList.add("_done");
+
+
+
+        })
+
+        semiFinalsCards.forEach((card, i) => {
+            card.classList.remove("_done", "_selected");
+            card.classList.add("_open");
+        })
+
+    }
 
     async function getUserPredict() {
         const res = await request('/stage');
         console.log(res.find(item => item.userid === userId));
         return res.find(item => item.userid === userId);
     }
-
 
     function hideLoader(){
         loader.classList.add("hide")
@@ -521,16 +575,29 @@
             if(stageResultData.defautValue){
                 stageCardWin.classList.add('_done');
                 stageCardLose.classList.add('_done');
+                stageCards.forEach((card, i) =>{
+                    card.classList.add("_done")
+                })
             }else{
+                console.log(bigWinTeam.outcome)
+                stageCards.forEach((card, i) =>{
+                    const currentData = othersTeams[i]
+                    if(currentData.outcome){
+                        card.classList.add('_win');
+                    }else{
+                        card.classList.add('_lose');
+                    }
+                })
                 if(bigWinTeam.outcome){
                     stageCardWin.classList.add('_win');
                 }else{
+                    console.log(stageCardWin)
                     stageCardWin.classList.add('_lose');
                 }
                 if(bigLoseTeam.outcome){
-                    stageCardWin.classList.add('_win');
+                    stageCardLose.classList.add('_win');
                 }else{
-                    stageCardWin.classList.add('_lose');
+                    stageCardLose.classList.add('_lose');
                 }
             }
 
@@ -553,8 +620,6 @@
             stageCardLoseName.setAttribute('data-translate', "popupLoseTitle");
         }
         translate()
-
-
     }
 
     function openPopup(dataAttr, container){
@@ -585,7 +650,7 @@
 
         console.log(teamsWin)
 
-        if(teamsWin.length === 6 && bigLose && bigWin){
+        if(teamsWin && teamsWin.length === 6 && bigLose && bigWin){
             console.log("predict")
             makePredictBtn.classList.remove("_lock")
         }
@@ -604,6 +669,81 @@
         if (place <= 175) return `prize_${week}-151-175`;
         if (place <= 200) return `prize_${week}-176-200`;
     }
+
+    function extractTeamData(pairElement, teamSelector, groupAttr) {
+        const teams = pairElement.querySelectorAll(teamSelector);
+        return Array.from(teams).map(team => ({
+            dataAttr: team.getAttribute('data-team'),
+            pairNum: Number(team.closest(`[${groupAttr}]`)?.getAttribute(groupAttr))
+        }));
+    }
+
+    function addTeamsFromPair(pairs, teamsArray) {
+        let result = [...teamsArray];
+        pairs.forEach(pair => {
+            const extracted = extractTeamData(pair, '.playoff__choose-team[data-team]', 'data-choose-semifinal');
+            result = [...result, ...extracted];
+        });
+        return result;
+    }
+
+    function renderPlayoffPopup(popupElement, teamsPlayoff, dataName, temporaryDataName) {
+        const scrollContainer = popupElement.querySelector('.playoff__popup-scroll');
+        if (!scrollContainer) return;
+
+        const savedData = JSON.parse(sessionStorage.getItem(dataName)) || null;
+
+        if (!savedData) {
+            popupElement.querySelector(".playoff__popup-btn").classList.add('_lock');
+        }
+
+        scrollContainer.innerHTML = '';
+
+        teamsPlayoff.forEach(team => {
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'playoff__choose-team _open';
+            teamDiv.dataset.team = team.dataAttr;
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'playoff__choose-team-icon';
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'playoff__choose-team-text';
+            textDiv.dataset.team = team.dataAttr;
+            textDiv.textContent = translateKey(team.dataAttr);
+
+            const btnDiv = document.createElement('div');
+            btnDiv.className = 'playoff__choose-team-btn';
+
+            teamDiv.append(iconDiv, textDiv, btnDiv);
+            scrollContainer.appendChild(teamDiv);
+
+            if (savedData && savedData.dataAttr === team.dataAttr) {
+                teamDiv.classList.add('_selected');
+                teamDiv.classList.remove('_open');
+            }
+        });
+
+        const teamTabs = scrollContainer.querySelectorAll('.playoff__choose-team');
+
+        teamTabs.forEach((teamTab, i) => {
+            teamTab.addEventListener('click', () => {
+                const teamName = teamTab.getAttribute('data-team');
+                const selectedTeam = teamsPlayoff.find(team => team.dataAttr.toLowerCase() === teamName.toLowerCase());
+                popupElement.querySelector(".playoff__popup-btn").classList.remove('_lock');
+                sessionStorage.setItem(temporaryDataName, JSON.stringify(selectedTeam));
+
+                teamTabs.forEach((item, j) => {
+                    item.classList.toggle('_selected', i === j);
+                    item.classList.toggle('_open', i !== j);
+                });
+            });
+        });
+    }
+
+
+
+
 
     async function init() {
         let attempts = 0;
@@ -633,7 +773,174 @@
                             }
                         }
                     })
+
+                    quoterFinalsData = [...stagesResult[2].teamsBet, stagesResult[2].bigWin ];
+
+
                 }
+                if(currentStage === 3){
+
+                    console.log(quarterFinals)
+
+                    setPlayoff(quarterFinals, semiFinals, finals, winner)
+
+                    semiFinalsTeams = [...addTeamsFromPair(quarterFinalsPairs, [])];
+                    finalsTeams = [...addTeamsFromPair(semiFinalsPairs, [])];
+                    winners = [...addTeamsFromPair(winnerPairs, [])];
+
+
+                    semiFinalsPairsBtns.forEach((btn, i) =>{
+                        const confirmPredictBtn = playoffSemiFinalPopup.querySelector(".playoff__popup-btn"),
+                            btnTeamName = btn.querySelector('.playoff__choose-team-text');
+
+                        let temporaryData = sessionStorage.getItem(`semiFinalsTemporary${i + 1}`);
+                        sessionStorage.setItem(`semiFinals${i + 1}`, temporaryData);
+
+                        let btnCurrentData = JSON.parse(sessionStorage.getItem(`semiFinals${i + 1}`));
+
+                        if(semiFinalsTeams.length < 4){
+                            confirmPredictBtn.classList.add('_lock');
+                        }else{
+                            confirmPredictBtn.classList.remove('_lock');
+                        }
+                        if(btnCurrentData){
+                            btn.classList.add('_selected');
+                            btn.setAttribute("data-team", btnCurrentData.dataAttr);
+                            btnTeamName.textContent = translateKey(btnCurrentData.dataAttr);
+                        }else{
+                            btn.classList.remove('_selected');
+                            btn.classList.add('_open');
+                        }
+                        closePopup(popupsWrap);
+
+                        btn.addEventListener('click', e => {
+                            semiFinalsTeams = [...addTeamsFromPair(quarterFinalsPairs, [])];
+                            const btnPairNumber = Number(btn.getAttribute("data-choose-semifinal"))
+
+
+                            let predictPairData = []
+
+                            console.log(semiFinalsTeams)
+                            semiFinalsTeams.forEach(team =>{
+                                if(team.pairNum === btnPairNumber){
+                                    predictPairData.push(team);
+                                }
+                            })
+
+
+
+                            console.log(semiFinalsTeams);
+
+                            renderPlayoffPopup(playoffSemiFinalPopup, predictPairData,`semiFinals${i + 1}`, `semiFinalsTemporary${i + 1}`)
+
+                            openPopup("playoffSemiFinal", popupsWrap);
+
+                            confirmPredictBtn.addEventListener("click", e => {
+
+                                temporaryData = sessionStorage.getItem(`semiFinalsTemporary${i + 1}`);
+                                sessionStorage.setItem(`semiFinals${i + 1}`, temporaryData);
+
+                                btnCurrentData = JSON.parse(sessionStorage.getItem(`semiFinals${i + 1}`));
+
+                                console.log(btnCurrentData)
+                                if(btnCurrentData){
+                                    btn.classList.add('_selected');
+                                    btn.setAttribute("data-team", btnCurrentData.dataAttr);
+                                    btnTeamName.textContent = translateKey(btnCurrentData.dataAttr);
+                                }
+                                if(semiFinalsTeams.length < 4){
+                                    confirmPredictBtn.classList.add('_lock');
+                                }else{
+                                    confirmPredictBtn.classList.remove('_lock');
+                                }
+                                closePopup(popupsWrap);
+                            })
+
+                        })
+
+                    })
+
+                    finalsPairsBtns.forEach((btn, i) => {
+                        const confirmPredictBtn = playoffFinalPopup.querySelector(".playoff__popup-btn"),
+                            btnTeamName = btn.querySelector('.playoff__choose-team-text');
+
+                        let temporaryData = sessionStorage.getItem(`finalsTemporary${i + 1}`);
+                        sessionStorage.setItem(`finals${i + 1}`, temporaryData);
+
+                        let btnCurrentData = JSON.parse(sessionStorage.getItem(`finals${i + 1}`));
+
+                        if (btnCurrentData) {
+                            btn.classList.add('_selected');
+                            btn.setAttribute("data-team", btnCurrentData.dataAttr);
+                            btnTeamName.textContent = translateKey(btnCurrentData.dataAttr);
+                        }else{
+                            btn.classList.remove('_selected');
+                            btn.classList.add('_open');
+                        }
+
+                        closePopup(popupsWrap);
+
+                        btn.addEventListener('click', e => {
+                            finalsTeams = [...addTeamsFromPair(semiFinalsPairs, [])];
+                            const btnPairNumber = Number(btn.getAttribute("data-choose-final"));
+                            const confirmPredictBtn = playoffFinalPopup.querySelector(".playoff__popup-btn")
+
+                            let validPairNums = btnPairNumber === 1 ? [1, 2] : [3, 4];
+
+                            const predictPairData = finalsTeams.filter(team => validPairNums.includes(team.pairNum));
+
+                            renderPlayoffPopup(playoffFinalPopup, predictPairData, `finals${i + 1}`, `finalsTemporary${i + 1}`);
+                            openPopup("playoffFinal", popupsWrap);
+
+                            const confirmHandler = () => {
+                                temporaryData = sessionStorage.getItem(`finalsTemporary${i + 1}`);
+                                sessionStorage.setItem(`finals${i + 1}`, temporaryData);
+
+                                btnCurrentData = JSON.parse(sessionStorage.getItem(`finals${i + 1}`));
+
+                                if (btnCurrentData) {
+                                    btn.classList.add('_selected');
+                                    btn.setAttribute("data-team", btnCurrentData.dataAttr);
+                                    btnTeamName.textContent = translateKey(btnCurrentData.dataAttr);
+                                }
+
+                                confirmPredictBtn.removeEventListener("click", confirmHandler);
+                                closePopup(popupsWrap);
+                            };
+
+                            confirmPredictBtn.addEventListener("click", confirmHandler);
+                        });
+                    });
+
+                    winnerCard.addEventListener('click', e => {
+                        winners = [...addTeamsFromPair(winnerPairs, [])];
+                        const confirmPredictBtn = playoffWinnerPopup.querySelector(".playoff__popup-btn"),
+                            btnTeamName = winnerCard.querySelector(".playoff__card-text");
+
+                        renderPlayoffPopup(playoffWinnerPopup, winners, `winner`, `winnerTemporary`);
+                        openPopup("winner", popupsWrap);
+
+                        const confirmHandler = () => {
+                            const temporaryData = sessionStorage.getItem(`winnerTemporary`);
+                            sessionStorage.setItem(`winner`, temporaryData);
+
+                            const btnCurrentData = JSON.parse(sessionStorage.getItem(`winner`));
+
+                            if (btnCurrentData) {
+                                winnerCard.classList.add('_selected');
+                                winnerCard.setAttribute("data-team", btnCurrentData.dataAttr);
+                                btnTeamName.textContent = translateKey(btnCurrentData.dataAttr);
+                            }
+
+                            confirmPredictBtn.removeEventListener("click", confirmHandler);
+                            closePopup(popupsWrap);
+                        };
+
+                        confirmPredictBtn.addEventListener("click", confirmHandler);
+                    });
+
+                }
+
             }).then((res) => {
                 stages.forEach((stage, i) => {
 
@@ -669,6 +976,7 @@
                         stage.classList.add("_done")
                     }
                     setStatePickStage(stage);
+                    setCurrentPredict()
                 });
                 stagesTabs.forEach(tab => {
                     tab.addEventListener('click', (e) => {
@@ -681,6 +989,13 @@
 
                         tab.classList.add('_active');
                         targetStage?.classList.add('_active');
+
+                        if(Number(targetStageValue) - 1 !== currentStage ){
+                            makePredictBtn.classList.add('hide');
+                        }else{
+                            makePredictBtn.classList.remove('hide');
+                        }
+
                     });
                 });
 
@@ -688,19 +1003,16 @@
                 renderTeamBlocks('bigLose', teams);
                 renderTeamBlocks('Others', teams);
 
-                setCurrentPredict()
-
                 document.addEventListener("click", (e) => {
                     const target = e.target,
-                        activeStage = document.querySelector(`[data-stage]._active`);
-
+                        activeStage = document.querySelector(`[data-stage]._active`),
+                        popupsCloseBtn = target.closest('.playoff__popup-close'),
+                        popup = target.closest('.playoff__popup');
                     // логіка для перших 3х етапів
                     if (currentStage <= 2) {
                         const clickedCard = target.closest('.stage__card'),
                             cardBigWin = target.closest('[data-big-stage="bigWin"]'),
                             cardBigLose = target.closest('[data-big-stage="bigLose"]'),
-                            popupsCloseBtn = target.closest('.playoff__popup-close'),
-                            popup = target.closest('.playoff__popup'),
                             bigWinPopup = target.closest('[data-popup="bigWin"]'),
                             bigLosePopup = target.closest('[data-popup="bigLose"]'),
                             OthersPopup = target.closest('[data-popup="Others"]'),
@@ -997,37 +1309,25 @@
                             closePopup(popupsWrap);
                         }
 
-
+                        if(teamsWin && bigWin && bigLose){
+                            makePredictBtn.classList.remove('_lock');
+                        }else{
+                            makePredictBtn.classList.add('_lock');
+                        }
                     }else{
-                        const playoffStages = activeStage.querySelector('[data-playoff-stage]'),
-                            quarterFinals = activeStage.querySelector('[data-playoff-stage="1"]'),
-                            semiFinals = activeStage.querySelector('[data-playoff-stage="2"]'),
-                            finals = activeStage.querySelector('[data-playoff-stage="3"]'),
-                            winner = activeStage.querySelector('[data-playoff-stage="4"]');
+                        // закриття попапу на інші команди
 
+                        const clickedTab = target.closest(".playoff__choose-team")
+                        const clickedCard = target.closest(".playoff__card")
+
+                        if(popupsCloseBtn || !clickedTab && !popup && !clickedCard) {
+                            closePopup(popupsWrap);
+                        }
 
                     }
-
-                    if(teamsWin && bigWin && bigLose){
-                        makePredictBtn.classList.remove('_lock');
-                    }else{
-                        makePredictBtn.classList.add('_lock');
-                    }
-
-                    if(target.closest(`[data-stage="4"]`)) console.log(target)
-
 
                 })
             })
-
-            // checkUserAuth();
-
-
-
-
-            console.log(teamsWin, bigWin, bigLose);
-
-
 
             makePredictBtn.addEventListener('click',()=>{
                 sendPredict()

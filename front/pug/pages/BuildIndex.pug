@@ -262,7 +262,7 @@ button.menu-btn menu
                                 .playoff__choose-team-text(data-translate="natusVincere") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
-                        .playoff__choose(data-choose-semifinal="1")
+                        .playoff__choose(data-choose-semifinal="2")
                             .playoff__decor vs
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
@@ -274,7 +274,7 @@ button.menu-btn menu
                                 .playoff__choose-team-text(data-translate="complexity") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
-                        .playoff__choose(data-choose-semifinal="2")
+                        .playoff__choose(data-choose-semifinal="3")
                             .playoff__decor vs
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
@@ -286,7 +286,7 @@ button.menu-btn menu
                                 .playoff__choose-team-text(data-translate="theMongolz") Команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
-                        .playoff__choose(data-choose-semifinal="2")
+                        .playoff__choose(data-choose-semifinal="4")
                             .playoff__decor vs
                             .playoff__choose-team._done
                                 .playoff__choose-team-icon
@@ -305,12 +305,12 @@ button.menu-btn menu
                             .playoff__decor.playoff__decor-2 vs
                             .playoff__decor-top
                             .playoff__decor-bottom
-                            .playoff__choose-team._selected
+                            .playoff__choose-team._selected(data-choose-semifinal="1")
                                 .playoff__choose-team-icon
                                 .playoff__choose-team-text(data-translate="popupLoseTitle") команда <br> «Chinggis Warriors»
                                 .playoff__choose-team-btn
 
-                            .playoff__choose-team._open
+                            .playoff__choose-team._open(data-choose-semifinal="2")
                                 .playoff__choose-team-icon
                                 .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                                 .playoff__choose-team-btn
@@ -319,12 +319,12 @@ button.menu-btn menu
                             .playoff__decor.playoff__decor-2 vs
                             .playoff__decor-top
                             .playoff__decor-bottom
-                            .playoff__choose-team._open
+                            .playoff__choose-team._open(data-choose-semifinal="3")
                                 .playoff__choose-team-icon
                                 .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                                 .playoff__choose-team-btn
 
-                            .playoff__choose-team._open
+                            .playoff__choose-team._open(data-choose-semifinal="4")
                                 .playoff__choose-team-icon
                                 .playoff__choose-team-text(data-translate="popupLoseTitle") обрати команду
                                 .playoff__choose-team-btn
@@ -332,16 +332,16 @@ button.menu-btn menu
                 .playoff__stage(data-playoff-stage="3")
                     .playoff__stage-title(data-translate="final") Фінал
                     .playoff__wrap
-                        .playoff__choose(data-choose-final="2")
+                        .playoff__choose(data-choose-winner="1")
                             .playoff__decor.playoff__decor-2 vs
                             .playoff__decor-top.long-line
                             .playoff__decor-bottom.long-line
-                            .playoff__choose-team._open
+                            .playoff__choose-team._open(data-choose-final="1")
                                 .playoff__choose-team-icon
                                 .playoff__choose-team-text(data-translate="popupLoseTitle") обреи команду
                                 .playoff__choose-team-btn
 
-                            .playoff__choose-team._open
+                            .playoff__choose-team._open(data-choose-final="2")
                                 .playoff__choose-team-icon
                                 .playoff__choose-team-text(data-translate="popupLoseTitle") обери команду
                                 .playoff__choose-team-btn
@@ -349,11 +349,11 @@ button.menu-btn menu
                 .playoff__stage(data-playoff-stage="4")
                     .playoff__stage-title(data-translate="finalPlayoff") Переможець
                     .playoff__wrap
-                        .playoff__card._selected
+                        .playoff__card._open(data-choose-winner="1")
                             .playoff__decor-top.long-line
                             .playoff__card-icon
                             .playoff__card-btn
-                            .playoff__card-text(data-translate="chinggisWarriors") обери команду
+                            .playoff__card-text(data-translate="popupLoseTitle") обери команду
         .predictor__btn.btn.unauth-msg #[span.btn-text(data-translate="signBtn") Авторизуйся ]
         .predictor__btn.btn.part-btn.hide.make-predict #[span.btn-text(data-translate="partBtn")  зробити прогноз ]
         .predictor__checkin(data-translate="predictorCheckIn") Прогноз прийнято. Ти можеш змінити його до початку першого матчу на цьому етапі. Чекай результати
@@ -860,4 +860,22 @@ button.menu-btn menu
                         .playoff__choose-team-text(data-translate="popupLoseTitle", data-team="tyloo") команда <br> «Tyloo»
                         .playoff__choose-team-btn
 
+                .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]
+            .playoff__popup.win-popup.hide(data-popup="playoffSemiFinal")
+                .playoff__popup-close
+                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle") Вибери команду] #[span.popup-title-score 3 - 0]
+                .playoff__decor vs
+                .playoff__popup-scroll
+                .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]
+            .playoff__popup.win-popup.hide(data-popup="playoffFinal")
+                .playoff__popup-close
+                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle") Вибери команду] #[span.popup-title-score 3 - 0]
+                .playoff__decor vs
+                .playoff__popup-scroll
+                .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]
+            .playoff__popup.win-popup.hide(data-popup="winner")
+                .playoff__popup-close
+                .playoff__popup-title.title #[span.popup-title-text(data-translate="popupLoseTitle") Вибери команду] #[span.popup-title-score 3 - 0]
+                .playoff__decor vs
+                .playoff__popup-scroll
                 .playoff__popup-btn.btn #[span.btn-text(data-translate="confirmBtn") підтвердити вибір]

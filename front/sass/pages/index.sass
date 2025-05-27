@@ -803,6 +803,7 @@ body
     border: 1px solid rgba($white, .5)
     flex-direction: column
     background: rgba($blue, .5) url("../img/predictor/stage/card-light.png") no-repeat 0 -25px/contain
+    transition: transform .5s ease-in-out
     .playoff
       &__decor-top
         transform: rotate(0deg)
@@ -824,6 +825,12 @@ body
       font-size: 14px
       letter-spacing: .01em
       text-align: center
+    &:hover
+      transform: scale(1.02)
+      cursor: pointer
+    &._lock
+      pointer-events: none
+      opacity: .5
     &._open
       border: 1px dashed rgba($green, .5)
       gap: 10px
