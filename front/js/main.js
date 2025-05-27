@@ -1,5 +1,9 @@
 (function () {
 
+    window.addEventListener('orientationchange', function () {
+        window.location.reload()
+    })
+
     const apiURL = 'https://fav-prom.com/api_click_pick'
 
     const stagesData = [
@@ -11,11 +15,11 @@
 
     const currentDate = new Date("2025-04-05T00:00:00+03:00");
 
-    // let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
+    let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
 
     // let currentStage = Number(sessionStorage.getItem("currentDate"))
 
-    let currentStage = 3
+    // let currentStage = 4
 
     console.log(currentStage);
 
@@ -741,10 +745,6 @@
         });
     }
 
-
-
-
-
     async function init() {
         let attempts = 0;
         const maxAttempts = 20;
@@ -940,7 +940,6 @@
                     });
 
                 }
-
             }).then((res) => {
                 stages.forEach((stage, i) => {
 
@@ -992,8 +991,11 @@
 
                         if(Number(targetStageValue) - 1 !== currentStage ){
                             makePredictBtn.classList.add('hide');
+                            results.classList.add("noBg")
+
                         }else{
                             makePredictBtn.classList.remove('hide');
+                            results.classList.remove("noBg")
                         }
 
                     });
@@ -1197,7 +1199,6 @@
                                 console.log(indexCard);
                             }
 
-
                             openPopup("Others", popupsWrap)
                         }
 
@@ -1327,6 +1328,12 @@
                     }
 
                 })
+
+                if(currentStage < 3){
+                    playoffPredictor.classList.add('_lock');
+                }else{
+                    updatePlayoffPosition();
+                }
             })
 
             makePredictBtn.addEventListener('click',()=>{
@@ -1352,12 +1359,6 @@
                 }, 10)
 
             };
-
-            if(currentStage < 3){
-                playoffPredictor.classList.add('_lock');
-            }else{
-                updatePlayoffPosition();
-            }
 
             window.addEventListener("orientationchange", updatePlayoffPosition);
             window.addEventListener("resize", updatePlayoffPosition);

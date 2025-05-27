@@ -151,6 +151,9 @@
           text-align: right
           justify-content: flex-end
           padding-right: 8px
+  .popups
+    .playoff
+      max-width: 550px
 @media screen and (max-width: 650px)
   .welcome
     position: relative
@@ -280,7 +283,8 @@
   .predictor
     &__tabs
       &-item
-        font-size: 14px
+        font-size: 13px
+        white-space: nowrap
         padding: 3px 10px
   .stage
     &__top
@@ -313,5 +317,11 @@
     &__prize
       width: 300px
       font-size: 58px
+
+@media screen and (max-width: 950px) and (max-height: 600px) and (orientation: landscape)
+  .popups
+    .playoff
+      transform: scale(.65) translateY(90px)
+      transform-origin: top
 
 

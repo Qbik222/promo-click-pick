@@ -47,6 +47,9 @@ $font-favbet-display-bold: FavbetDisplay-Bold, sans-serif
 .hide
   display: none !important
 
+.noBg
+  background: transparent !important
+
 
 
 body.light
@@ -143,6 +146,7 @@ body
   width: 100%
   padding: 375px 0 0 0
   max-width: 1370px
+  position: relative
   background: url("../img/welcome/bg-desc.jpg") no-repeat 50% 0/cover
   background-size: 1365px 767px
   @media screen and (max-width: 1300px)
@@ -151,6 +155,27 @@ body
   @media screen and (max-width: 650px)
     background: url("../img/welcome/bg-mob.jpg") no-repeat 50% 0/cover
     background-size: 100% auto
+
+  &__grad
+    width: 100%
+    height: 100%
+    position: absolute
+    left: 0
+    right: 0
+    pointer-events: none
+    z-index: 0
+    background: linear-gradient(to right, $dark-blue 5%, rgba(25, 26, 35, 0) 15%, rgba(25, 26, 35, 0) 85%, $dark-blue 95%)
+    &::before
+      content: ""
+      position: absolute
+      width: 100%
+      height: 50%
+      bottom: 0
+      background: linear-gradient(180deg, rgba(25, 26, 35, 0) 48%, $dark-blue 75%)
+
+    @media screen and (max-width: 600px)
+      background: transparent
+
   &__title
     color: $white
     font-size: 36px
@@ -159,6 +184,7 @@ body
     width: 680px
     text-align: left
     margin-bottom: -10px
+    z-index: 2
   &__prize
     color: $white
     font-size: 136px
@@ -168,6 +194,7 @@ body
     display: flex
     align-items: flex-start
     justify-content: center
+    z-index: 2
     span
       font-family: $font-favbet-display-med
       font-size: 70px
@@ -898,7 +925,7 @@ body
   position: relative
   background: url("../img/results/bg-desc.jpg") no-repeat 50% -100px/cover
   background-size: 800px 700px
-  margin: -50px 0 0 0
+  margin: -30px 0 0 0
   @media screen and (max-width: 600px)
     background: url("../img/results/bg-mob.jpg") no-repeat 50% -100px/cover
     background-size: 620px 570px
@@ -1179,6 +1206,8 @@ body
     @media screen and (max-width: 600px)
       font-size: 14px
       line-height: 22px
+    &::-webkit-details-marker
+      display: none
     &::before
       content: ""
       display: block
@@ -1329,6 +1358,7 @@ body.dark
 
 // dark
 body.dark
+  background: $dark
   .fav-page
     background: $dark
   .welcome
@@ -1342,6 +1372,12 @@ body.dark
       background-size: 100% auto
       &::before
         background: linear-gradient(180deg, rgba($dark, 0) 15%, $dark 95%)
+    &__grad
+      background: linear-gradient(to right, $dark 5%, rgba(25, 26, 35, 0) 15%, rgba(25, 26, 35, 0) 85%, $dark 95%)
+      @media screen and (max-width: 600px)
+        background: transparent
+      &::before
+        background: linear-gradient(180deg, rgba(25, 26, 35, 0) 48%, $dark 75%)
   .predictor
     &::before
       background: url("../img/predictor/bg-desc-dark.png") no-repeat 50% 0/cover
@@ -1375,6 +1411,8 @@ body.dark
     &__choose
       &-team
         background: radial-gradient(81.92% 81.92% at 50% 35.35%, rgba(108, 108, 108, 0.41) 0%, rgba(169, 169, 169, 0.00) 54.33%), rgba(25, 26, 35, 0.50)
+  .timer
+    background: rgba($dark, 0.7) url("../img/drop-bg.png") repeat 0 0/cover
   .popups
     background: rgba($dark, 0.85)
   .fav-page.en
