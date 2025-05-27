@@ -15,6 +15,8 @@
 
     let currentStage = Number(sessionStorage.getItem("currentDate"))
 
+    // let currentStage = 4
+
     console.log(currentStage);
 
     const mainPage = document.querySelector(".fav-page"),
@@ -23,14 +25,16 @@
         redirectBtns = document.querySelectorAll('.btn-join'),
         loader = document.querySelector(".spinner-overlay"),
         stages = document.querySelectorAll("[data-stage]"),
+        stageActive = document.querySelector(`[data-stage="${currentStage + 1}"]`),
         stagesTabs = document.querySelectorAll("[data-stage-tab]"),
         playoffStage = document.querySelector(".playoff"),
         results = document.querySelector(".results"),
         predictor = document.querySelector(".predictor"),
         playoffPredictor = predictor.querySelector(".playoff"),
         teamTextPopups = document.querySelectorAll('.playoff__choose-team-text'),
-        popupsWrap = document.querySelector(".popups");
-
+        popupsWrap = document.querySelector(".popups"),
+        makePredictBtn = document.querySelector('.make-predict'),
+        predictorCheckIn = document.querySelector('.predictor__checkin');
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -41,7 +45,6 @@
         el.innerHTML = i18nData[dataAttr] || '*----NEED TO BE TRANSLATED----*   key:  ' + dataAttr;
         el.removeAttribute('data-translate');
     });
-
 
     const teams = [
         { team: "Complexity", dataAttr: "complexity" },
@@ -77,7 +80,7 @@
         { team: "Tyloo", dataAttr: "tyloo" }
     ];
 
-    let bigLose = sessionStorage.getItem("bigLoose")
+    let bigLose = sessionStorage.getItem("bigLose")
     let bigWin = sessionStorage.getItem("bigWin")
 
     let teamsWin = JSON.parse(sessionStorage.getItem("teamsWin")) ?? []
@@ -124,11 +127,23 @@
             ],
             bigWin: { team: "PaiN", dataAttr: "PaiN", outcome: true },
             bigLose: { team: "NRG", dataAttr: "NRG", outcome: true }
+        },
+        {
+            defautValue: true,
+            teamsBet:[
+                { team: "Complexity", dataAttr: "complexity", outcome: true },
+                { team: "Falcons", dataAttr: "falcons", outcome: true},
+                { team: "Vitality", dataAttr: "vitality", outcome: true },
+                { team: "Heroic", dataAttr: "heroic", outcome: true },
+                { team: "Faze", dataAttr: "faze", outcome: true },
+                { team: "Spirit", dataAttr: "spirit", outcome: true },
+                { team: "B8", dataAttr: "B8", outcome: true },
+            ],
+            bigWin: { team: "PaiN", dataAttr: "PaiN", outcome: true },
+            bigLose: { team: "NRG", dataAttr: "NRG", outcome: true }
         }
 
     ]
-
-
 
     let loaderBtn = false
 
@@ -201,6 +216,108 @@
         });
         translate()
     }
+
+    function sendPredict(){
+        if(currentStage <= 2){
+            const otherTeams = JSON.parse(sessionStorage.getItem("teamsWin"));
+            const bigWin = JSON.parse(sessionStorage.getItem("bigWin"));
+            const bigLose = JSON.parse(sessionStorage.getItem("bigLose"));
+
+            // console.log(otherTeams, bigWin, bigLose);
+
+
+            const predictBody = {
+                userid: userId,
+                bet: {
+                    teamsBet: [...otherTeams],
+                    bigWinner: {...bigWin},
+                    bigLoser: {...bigLose},
+                }
+            }
+
+            request(`/bet/stage/${currentStage + 1}`, {
+                method: 'POST',
+                body: JSON.stringify(predictBody),
+            }).then(res => {
+                if (res.success) {
+                    setCurrentPredict()
+                }
+            })
+            console.log(predictBody)
+        }
+
+    }
+
+    function setCurrentPredict() {
+        getUserPredict().then(predict => {
+            const stageBet = predict?.[`stage${currentStage + 1}Bet`];
+
+            if (!stageBet) {
+                console.warn(`No bets for stage ${currentStage + 1}`);
+                predictorCheckIn.classList.add('hide');
+                return;
+            }
+
+            const stageOthers = stageActive.querySelector(".stage__wrap"),
+                stageOtherCards = stageOthers.querySelectorAll(".stage__card"),
+                stageWinCard = stageActive.querySelector(`[data-big-stage="bigWin"]`),
+                stageWinCardTeam = stageWinCard.querySelector(".stage__card-text"),
+                stageLoseCard = stageActive.querySelector(`[data-big-stage="bigLose"]`),
+                stageLoseCardTeam = stageLoseCard.querySelector(".stage__card-text"),
+                predictOtherTeams = stageBet.teamsBet,
+                predictWinner = stageBet.bigWinner,
+                predictLoser = stageBet.bigLoser;
+
+            predictorCheckIn.classList.remove('hide');
+
+            sessionStorage.setItem("teamsWin", JSON.stringify(predictOtherTeams));
+            sessionStorage.setItem("bigWin", JSON.stringify(predictWinner));
+            sessionStorage.setItem("bigLose", JSON.stringify(predictLoser));
+            teamsWin = JSON.parse(sessionStorage.getItem("teamsWin"));
+            bigWin = sessionStorage.getItem("bigWin");
+            bigLose = sessionStorage.getItem("bigLose");
+
+
+            stageWinCard.classList.add("_selected");
+            stageWinCard.classList.remove("_open");
+            stageLoseCard.classList.add("_selected");
+            stageLoseCard.classList.remove("_open");
+
+            stageWinCardTeam.textContent = translateKey(predictWinner.dataAttr);
+            stageLoseCardTeam.textContent = translateKey(predictLoser.dataAttr);
+
+            stageOtherCards.forEach((card, i) => {
+                const cardTeamName = card.querySelector(".stage__card-text");
+                const team = teamsWin[i];
+                // if (!team) return; // якщо раптом менше команд у ставці
+                const dataAttr = team.dataAttr;
+
+                console.log(dataAttr);
+
+
+
+                cardTeamName.setAttribute("data-team", dataAttr);
+                cardTeamName.textContent = translateKey(dataAttr);
+                card.classList.remove("_open");
+                card.classList.add("_selected");
+                // console.log(team)
+                // console.log(card)
+            });
+
+            console.log("Loaded user prediction:", stageBet);
+        }).catch(err => {
+            console.error("Failed to load user prediction", err);
+        });
+        checkUserAuth()
+    }
+
+
+    async function getUserPredict() {
+        const res = await request('/stage');
+        console.log(res.find(item => item.userid === userId));
+        return res.find(item => item.userid === userId);
+    }
+
 
     function hideLoader(){
         loader.classList.add("hide")
@@ -466,6 +583,13 @@
         container.classList.add('overlay-opacity');
         document.body.style.overflow = "auto";
 
+        console.log(teamsWin)
+
+        if(teamsWin.length === 6 && bigLose && bigWin){
+            console.log("predict")
+            makePredictBtn.classList.remove("_lock")
+        }
+
     }
 
     function getPrizeTranslationKey(place, week) {
@@ -479,35 +603,6 @@
         if (place <= 150) return `prize_${week}-126-150`;
         if (place <= 175) return `prize_${week}-151-175`;
         if (place <= 200) return `prize_${week}-176-200`;
-    }
-
-    function participate() {
-        if (!userId) {
-            return;
-        }
-        const params = { userid: userId };
-        fetch(apiURL + '/user/', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(params)
-        }).then(res => res.json())
-            .then(res => {
-                loaderBtn = true
-                toggleClasses(participateBtns, "loader")
-                toggleTranslates(participateBtns, "loader")
-                setTimeout(() =>{
-                    toggleTranslates(participateBtns, "loader_ready")
-                    toggleClasses(participateBtns, "done")
-                    toggleClasses(participateBtns, "loader")
-                }, 500)
-                setTimeout(()=>{
-                    checkUserAuth()
-                }, 1000)
-
-            });
     }
 
     async function init() {
@@ -525,8 +620,7 @@
         }
 
         function quickCheckAndRender() {
-            checkUserAuth();
-            request('/stage/').then((res) => {
+            request('/stage').then((res) => {
                 const userStages = res.find(user => user.userid === userId)
 
                 if(userStages) {
@@ -589,326 +683,354 @@
                         targetStage?.classList.add('_active');
                     });
                 });
+
+                renderTeamBlocks('bigWin', teams);
+                renderTeamBlocks('bigLose', teams);
+                renderTeamBlocks('Others', teams);
+
+                setCurrentPredict()
+
+                document.addEventListener("click", (e) => {
+                    const target = e.target,
+                        activeStage = document.querySelector(`[data-stage]._active`);
+
+                    // логіка для перших 3х етапів
+                    if (currentStage <= 2) {
+                        const clickedCard = target.closest('.stage__card'),
+                            cardBigWin = target.closest('[data-big-stage="bigWin"]'),
+                            cardBigLose = target.closest('[data-big-stage="bigLose"]'),
+                            popupsCloseBtn = target.closest('.playoff__popup-close'),
+                            popup = target.closest('.playoff__popup'),
+                            bigWinPopup = target.closest('[data-popup="bigWin"]'),
+                            bigLosePopup = target.closest('[data-popup="bigLose"]'),
+                            OthersPopup = target.closest('[data-popup="Others"]'),
+                            popupsTeam = target.closest('.playoff__choose-team'),
+                            othersCard = target.closest('.stage__card'),
+                            allPopupsTeam = target.closest(".playoff__popup")?.querySelectorAll('.playoff__choose-team'),
+                            clickedTeamName = target.querySelector('[data-team]')?.getAttribute('data-team'),
+                            activeBigWin = activeStage?.querySelector(`[data-big-stage="bigWin"]`),
+                            activeBigWinTeam = activeBigWin?.querySelector(".stage__card-text"),
+                            activeBigLose = activeStage?.querySelector(`[data-big-stage="bigLose"]`),
+                            activeBigLoseTeam = activeBigLose?.querySelector(".stage__card-text"),
+                            bigWinPopupsTeam = document.querySelector(`[data-popup="bigWin"]`).querySelectorAll('.playoff__choose-team-text'),
+                            bigLosePopupsTeam = document.querySelector(`[data-popup="bigLose"]`).querySelectorAll('.playoff__choose-team-text'),
+                            othersPopupsTeam = document.querySelector(`[data-popup="Others"]`).querySelectorAll('.playoff__choose-team-text'),
+                            confirmChooseBtn = target.closest('.playoff__popup-btn'),
+                            othersConfirmBtn = document.querySelector(`[data-popup="Others"]`).querySelector('.playoff__popup-btn'),
+                            bigWinConfirmBtn = document.querySelector(`[data-popup="bigWin"]`).querySelector('.playoff__popup-btn'),
+                            bigLoseConfirmBtn = document.querySelector(`[data-popup="bigLose"]`).querySelector('.playoff__popup-btn'),
+                            activeOthers = activeStage.querySelector(`[data-cards-wrap="stage"]`).querySelectorAll('.stage__card');
+
+                        // відкриття попапу на 3 0
+                        if(cardBigWin){
+                            sessionStorage.removeItem("bigWinTemporary");
+                            if(bigWin){
+                                bigWinConfirmBtn.classList.remove('_lock');
+                                sessionStorage.setItem("bigWinTemporary", bigWin);
+                            }
+                            if(sessionStorage.getItem("bigWinTemporary")){
+                                bigWinConfirmBtn.classList.remove('_lock')
+                            }else{
+                                bigWinConfirmBtn.classList.add('_lock')
+                            }
+
+                            bigWinPopupsTeam.forEach((team) => {
+                                const teamName = activeStage.querySelector(`[data-big-stage="bigLose"]`).querySelector(".stage__card-text");
+                                const teamWrap = team.closest(".playoff__choose-team")
+                                const isSelectedTeam = teamName.getAttribute('data-team') === team.getAttribute('data-team');
+                                const isSelectedBigWin = JSON.parse(bigWin)?.dataAttr === team.getAttribute("data-team")
+
+                                if(isSelectedBigWin){
+                                    teamWrap.classList.remove('_open');
+                                    teamWrap.classList.remove('_lock');
+                                    teamWrap.classList.add('_selected');
+                                }
+                                if(isSelectedTeam){
+                                    teamWrap.classList.add('hide');
+                                }
+                            })
+
+                            openPopup("bigWin", popupsWrap)
+                        }
+
+                        // відкриття попапу на 0 3
+                        if(cardBigLose){
+                            sessionStorage.removeItem("bigLoseTemporary");
+                            if(bigLose){
+                                bigLoseConfirmBtn.classList.remove('_lock');
+                                sessionStorage.setItem("bigLoseTemporary", bigLose);
+                            }
+                            if(sessionStorage.getItem("bigLoseTemporary")){
+                                bigLoseConfirmBtn.classList.remove('_lock')
+                            }else{
+                                bigLoseConfirmBtn.classList.add('_lock')
+                            }
+                            bigLosePopupsTeam.forEach((team) => {
+                                const teamName = activeStage.querySelector(`[data-big-stage="bigWin"]`).querySelector(".stage__card-text");
+                                const teamWrap = team.closest(".playoff__choose-team")
+                                const isSelectedTeam = teamName.getAttribute('data-team') === team.getAttribute('data-team');
+                                const isSelectedBigLose = JSON.parse(bigLose)?.dataAttr === team.getAttribute("data-team")
+
+                                if(isSelectedBigLose){
+                                    teamWrap.classList.remove('_open');
+                                    teamWrap.classList.remove('_lock');
+                                    teamWrap.classList.add('_selected');
+                                }
+                                if(isSelectedTeam){
+                                    teamWrap.classList.add('hide');
+                                }else{
+                                    teamWrap.classList.remove('hide');
+                                }
+                            })
+                            openPopup("bigLose", popupsWrap)
+                        }
+
+                        // вибір предікту на 3 0
+                        if(bigWinPopup && popupsTeam){
+                            if(clickedTeamName && popupsTeam){
+
+                                let isSelectedBigWin = JSON.parse(bigWin) ?? false
+
+                                if(isSelectedBigWin){
+                                    sessionStorage.setItem("bigWinTemporary", bigWin)
+                                }
+                                let currentTeam = teams.find(team => team.dataAttr === clickedTeamName)
+                                sessionStorage.setItem("bigWinTemporary", JSON.stringify(currentTeam))
+
+                                allPopupsTeam.forEach((team) => {
+                                    team.classList.remove('_selected')
+                                    team.classList.add('_open')
+                                })
+                                popupsTeam.classList.add('_selected')
+                                popupsTeam.classList.remove('_open')
+                                if(sessionStorage.getItem("bigWinTemporary")){
+                                    bigWinConfirmBtn.classList.remove('_lock')
+                                }else{
+                                    bigWinConfirmBtn.classList.add('_lock')
+                                }
+
+                            }
+                        }
+
+                        // вибір предікту на 0 3
+                        if(bigLosePopup && popupsTeam){
+
+                            if(clickedTeamName){
+
+                                let isSelectedBigLose = JSON.parse(bigLose) ?? false
+
+                                if(isSelectedBigLose){
+                                    sessionStorage.setItem("bigLoseTemporary", bigLose)
+                                }
+                                let currentTeam = teams.find(team => team.dataAttr === clickedTeamName)
+                                sessionStorage.setItem("bigLoseTemporary", JSON.stringify(currentTeam))
+
+                                allPopupsTeam.forEach((team) => {
+                                    team.classList.remove('_selected')
+                                    team.classList.add('_open')
+                                })
+
+                                popupsTeam?.classList.add('_selected')
+                                popupsTeam?.classList.remove('_open')
+                                if(sessionStorage.getItem("bigLoseTemporary")){
+                                    bigLoseConfirmBtn.classList.remove('_lock')
+                                }else{
+                                    bigLoseConfirmBtn.classList.add('_lock')
+                                }
+                            }
+                        }
+
+                        // відкриття попапу на інші команди
+                        if(clickedCard && !cardBigWin && !cardBigLose){
+                            const temoporaryTeams = sessionStorage.getItem("teamsWinTemporary");
+                            const selectedTeams = teamsWin?.filter(item => item && item.dataAttr);
+                            console.log(selectedTeams)
+                            sessionStorage.removeItem("teamsWinTemporary")
+                            if(selectedTeams && selectedTeams.length > 0){
+                                sessionStorage.setItem("teamsWinTemporary", JSON.stringify(selectedTeams));
+                            }
+                            if(temoporaryTeams){
+                                othersConfirmBtn.classList.remove('_lock');
+                            }else{
+                                othersConfirmBtn.classList.add('_lock');
+                            }
+
+
+                            othersPopupsTeam.forEach((team) => {
+                                const teamDataAttr = team.getAttribute('data-team');
+                                const teamWrap = team.closest(".playoff__choose-team");
+
+                                const teamNameWin = activeStage.querySelector('[data-big-stage="bigWin"] .stage__card-text');
+                                const teamNameLose = activeStage.querySelector('[data-big-stage="bigLose"] .stage__card-text');
+
+                                const isSelectedTeam = selectedTeams?.some(item => item.dataAttr === teamDataAttr);
+                                const isSelectedTeamWin = teamNameWin?.getAttribute('data-team') === teamDataAttr;
+                                const isSelectedTeamLose = teamNameLose?.getAttribute('data-team') === teamDataAttr;
+
+                                if (isSelectedTeam) {
+                                    teamWrap.classList.remove('_open');
+                                    teamWrap.classList.add('_selected');
+                                }
+                                if(selectedTeams?.length > 0 && !isSelectedTeam){
+                                    teamWrap.classList.add('_lock');
+                                }
+
+                                if (isSelectedTeamWin || isSelectedTeamLose) {
+                                    teamWrap.classList.add('hide');
+                                }
+                            });
+                            if(activeOthers){
+                                othersArray = Array.from(activeOthers);
+                                indexCard = othersArray.indexOf(othersCard);
+                                console.log(indexCard);
+                            }
+
+
+                            openPopup("Others", popupsWrap)
+                        }
+
+                        // закриття попапу на інші команди
+                        if(popupsCloseBtn || !clickedCard && !popup ) {
+                            closePopup(popupsWrap);
+                        }
+
+                        // вибір предікту на всі інші команди
+                        if (OthersPopup && popupsTeam) {
+                            // popupsTeam.classList.add('_selected');
+                            // popupsTeam.classList.remove('_open');
+                            if (clickedTeamName) {
+
+                                let currentTeam = teams.find(team => team.dataAttr === clickedTeamName);
+
+                                if (currentTeam) {
+                                    let newPredict = JSON.parse(sessionStorage.getItem("teamsWinTemporary")) || [];
+
+                                    const alreadyAdded = newPredict.some(item => item.dataAttr === currentTeam.dataAttr);
+                                    const isPredictFull = newPredict.length >= 7;
+
+                                    if (!alreadyAdded && !isPredictFull) {
+                                        newPredict.push(currentTeam);
+                                        sessionStorage.setItem("teamsWinTemporary", JSON.stringify(newPredict));
+                                        console.log("✅ Added:", currentTeam);
+                                        popupsTeam.classList.add('_selected');
+                                        popupsTeam.classList.remove('_open');
+                                    } else {
+                                        newPredict = newPredict.filter(team => team.dataAttr !== currentTeam.dataAttr);
+                                        sessionStorage.setItem("teamsWinTemporary", JSON.stringify(newPredict));
+                                        console.log("⚠️ Team removed", currentTeam);
+                                        popupsTeam.classList.remove('_selected');
+                                        popupsTeam.classList.add('_open');
+                                    }
+
+                                    const updatedLength = newPredict.length;
+
+                                    if (updatedLength < 7) {
+                                        othersConfirmBtn.classList.add('_lock');
+                                        allPopupsTeam.forEach(team => team.classList.remove('_lock'));
+                                    } else if (updatedLength === 7) {
+                                        othersConfirmBtn.classList.remove('_lock');
+                                        allPopupsTeam.forEach(team => {
+                                            if (team.classList.contains('_open')) {
+                                                team.classList.add('_lock');
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    console.log("❌ Team not found for:", clickedTeamName);
+                                }
+
+
+                            }
+                        }
+
+                        // підтвердження вибору в попапі
+                        if(confirmChooseBtn){
+
+                            teamsWin = JSON.parse(sessionStorage.getItem("teamsWinTemporary"));
+                            if(teamsWin) sessionStorage.setItem("teamsWin", JSON.stringify(teamsWin));
+
+                            bigLose = sessionStorage.getItem("bigLoseTemporary");
+                            if(bigLose) sessionStorage.setItem("bigLose", bigLose)
+
+                            bigWin = sessionStorage.getItem("bigWinTemporary");
+                            if(bigWin) sessionStorage.setItem("bigWin", bigWin)
+
+
+                            const bigWinPredict = JSON.parse(bigWin)
+                            const bigLosePredict = JSON.parse(bigLose)
+                            const otherTeamsPredict = teamsWin;
+
+                            if(bigLosePredict){
+                                activeBigLose.classList.remove('_open')
+                                activeBigLose.classList.add('_selected')
+                                activeBigLoseTeam.textContent = translateKey(bigLosePredict.dataAttr)
+                                activeBigLoseTeam.setAttribute('data-team', bigLosePredict.dataAttr)
+                            }
+
+                            if(bigWinPredict){
+                                activeBigWin.classList.remove('_open')
+                                activeBigWin.classList.add('_selected')
+                                activeBigWinTeam.textContent = translateKey(bigWinPredict.dataAttr)
+                                activeBigWinTeam.setAttribute('data-team', bigWinPredict.dataAttr)
+                            }
+
+                            if(otherTeamsPredict){
+                                otherTeamsPredict.forEach((team, i) => {
+                                    const currentCardTeamName = activeOthers[i].querySelector(".stage__card-text");
+                                    // console.log(currentCardTeamName, team)
+
+                                    activeOthers[i].classList.add('_selected')
+                                    activeOthers[i].classList.remove('_open')
+
+                                    currentCardTeamName.setAttribute('data-team', team.dataAttr)
+                                    currentCardTeamName.textContent = translateKey(team.dataAttr)
+
+                                })
+                            }
+
+                            if(teamsWin && bigWin && bigLose){
+                                makePredictBtn.classList.remove('_lock');
+                            }else{
+                                makePredictBtn.classList.add('_lock');
+                            }
+
+                            closePopup(popupsWrap);
+                        }
+
+
+                    }else{
+                        const playoffStages = activeStage.querySelector('[data-playoff-stage]'),
+                            quarterFinals = activeStage.querySelector('[data-playoff-stage="1"]'),
+                            semiFinals = activeStage.querySelector('[data-playoff-stage="2"]'),
+                            finals = activeStage.querySelector('[data-playoff-stage="3"]'),
+                            winner = activeStage.querySelector('[data-playoff-stage="4"]');
+
+
+                    }
+
+                    if(teamsWin && bigWin && bigLose){
+                        makePredictBtn.classList.remove('_lock');
+                    }else{
+                        makePredictBtn.classList.add('_lock');
+                    }
+
+                    if(target.closest(`[data-stage="4"]`)) console.log(target)
+
+
+                })
             })
 
-            renderTeamBlocks('bigWin', teams);
-            renderTeamBlocks('bigLose', teams);
-            renderTeamBlocks('Others', teams);
+            // checkUserAuth();
 
 
 
-            document.addEventListener("click", (e) => {
-                const target = e.target,
-                clickedCard = target.closest('.stage__card'),
-                cardBigWin = target.closest('[data-big-stage="bigWin"]'),
-                cardBigLose = target.closest('[data-big-stage="bigLose"]'),
-                popupsCloseBtn = target.closest('.playoff__popup-close'),
-                popup = target.closest('.playoff__popup'),
-                bigWinPopup = target.closest('[data-popup="bigWin"]'),
-                bigLosePopup = target.closest('[data-popup="bigLose"]'),
-                OthersPopup = target.closest('[data-popup="Others"]'),
-                popupsTeam = target.closest('.playoff__choose-team'),
-                othersCard = target.closest('.stage__card'),
-                allPopupsTeam = target.closest(".playoff__popup")?.querySelectorAll('.playoff__choose-team'),
-                clickedTeamName = target.querySelector('[data-team]')?.getAttribute('data-team'),
-                activeStage = document.querySelector(`[data-stage]._active`),
-                activeBigWin = activeStage.querySelector(`[data-big-stage="bigWin"]`),
-                activeBigWinTeam = activeBigWin.querySelector(".stage__card-text"),
-                activeBigLose = activeStage.querySelector(`[data-big-stage="bigLose"]`),
-                activeBigLoseTeam = activeBigLose.querySelector(".stage__card-text"),
-                activeOthers = activeStage.querySelector(`[data-cards-wrap="stage"]`).querySelectorAll('.stage__card'),
-                bigWinPopupsTeam = document.querySelector(`[data-popup="bigWin"]`).querySelectorAll('.playoff__choose-team-text'),
-                bigLosePopupsTeam = document.querySelector(`[data-popup="bigLose"]`).querySelectorAll('.playoff__choose-team-text'),
-                othersPopupsTeam = document.querySelector(`[data-popup="Others"]`).querySelectorAll('.playoff__choose-team-text'),
-                confirmChooseBtn = target.closest('.playoff__popup-btn'),
-                othersConfirmBtn = document.querySelector(`[data-popup="Others"]`).querySelector('.playoff__popup-btn'),
-                bigWinConfirmBtn = document.querySelector(`[data-popup="bigWin"]`).querySelector('.playoff__popup-btn'),
-                bigLoseConfirmBtn = document.querySelector(`[data-popup="bigLose"]`).querySelector('.playoff__popup-btn');
+
+            console.log(teamsWin, bigWin, bigLose);
 
 
-                // console.log(activeOthers)
 
-                // відкриття попапу на 3 0
-                if(cardBigWin){
-                    sessionStorage.removeItem("bigWinTemporary");
-                    if(bigWin){
-                        bigWinConfirmBtn.classList.remove('_lock');
-                        sessionStorage.setItem("bigWinTemporary", bigWin);
-                    }
-                    if(sessionStorage.getItem("bigWinTemporary")){
-                        bigWinConfirmBtn.classList.remove('_lock')
-                    }else{
-                        bigWinConfirmBtn.classList.add('_lock')
-                    }
-
-                    bigWinPopupsTeam.forEach((team) => {
-                        const teamName = activeStage.querySelector(`[data-big-stage="bigLose"]`).querySelector(".stage__card-text");
-                        const teamWrap = team.closest(".playoff__choose-team")
-                        const isSelectedTeam = teamName.getAttribute('data-team') === team.getAttribute('data-team');
-                        const isSelectedBigWin = JSON.parse(bigWin)?.dataAttr === team.getAttribute("data-team")
-
-                        // console.log(bigWin)
-                        // console.log(team.getAttribute("data-team"))
-
-                        // console.log(isSelectedBigWin)
-                        // if(bigWin){
-                        //     teamWrap.classList.add('_lock');
-                        // }
-                        if(isSelectedBigWin){
-                            teamWrap.classList.remove('_open');
-                            teamWrap.classList.remove('_lock');
-                            teamWrap.classList.add('_selected');
-                        }
-                        if(isSelectedTeam){
-                            teamWrap.classList.add('hide');
-                        }
-                    })
-
-                    openPopup("bigWin", popupsWrap)
-                }
-
-                // відкриття попапу на 0 3
-                if(cardBigLose){
-                    sessionStorage.removeItem("bigLoseTemporary");
-                    if(bigLose){
-                        bigLoseConfirmBtn.classList.remove('_lock');
-                        sessionStorage.setItem("bigLoseTemporary", bigLose);
-                    }
-                    if(sessionStorage.getItem("bigLoseTemporary")){
-                        bigLoseConfirmBtn.classList.remove('_lock')
-                    }else{
-                        bigLoseConfirmBtn.classList.add('_lock')
-                    }
-                    bigLosePopupsTeam.forEach((team) => {
-                        const teamName = activeStage.querySelector(`[data-big-stage="bigWin"]`).querySelector(".stage__card-text");
-                        const teamWrap = team.closest(".playoff__choose-team")
-                        const isSelectedTeam = teamName.getAttribute('data-team') === team.getAttribute('data-team');
-                        const isSelectedBigLose = JSON.parse(bigLose)?.dataAttr === team.getAttribute("data-team")
-
-                        if(isSelectedBigLose){
-                            teamWrap.classList.remove('_open');
-                            teamWrap.classList.remove('_lock');
-                            teamWrap.classList.add('_selected');
-                        }
-                        if(isSelectedTeam){
-                            teamWrap.classList.add('hide');
-                        }else{
-                            teamWrap.classList.remove('hide');
-                        }
-                    })
-                    openPopup("bigLose", popupsWrap)
-                }
-
-                // відкриття попапу на інші команди
-                if(clickedCard && !cardBigWin && !cardBigLose){
-                    const selectedTeams = teamsWin?.filter(item => item && item.dataAttr);
-                    sessionStorage.removeItem("teamsWinTemporary")
-                    if(selectedTeams && selectedTeams.length > 0){
-                        sessionStorage.setItem("teamsWinTemporary", JSON.stringify(selectedTeams));
-                    }
-                    othersPopupsTeam.forEach((team) => {
-                        const teamDataAttr = team.getAttribute('data-team');
-                        const teamWrap = team.closest(".playoff__choose-team");
-
-                        const teamNameWin = activeStage.querySelector('[data-big-stage="bigWin"] .stage__card-text');
-                        const teamNameLose = activeStage.querySelector('[data-big-stage="bigLose"] .stage__card-text');
-
-                        const isSelectedTeam = selectedTeams?.some(item => item.dataAttr === teamDataAttr);
-                        const isSelectedTeamWin = teamNameWin?.getAttribute('data-team') === teamDataAttr;
-                        const isSelectedTeamLose = teamNameLose?.getAttribute('data-team') === teamDataAttr;
-
-                        if (isSelectedTeam) {
-                            teamWrap.classList.remove('_open');
-                            teamWrap.classList.add('_selected');
-                        }
-                        if(selectedTeams?.length > 0 && !isSelectedTeam){
-                            teamWrap.classList.add('_lock');
-                        }
-
-                        if (isSelectedTeamWin || isSelectedTeamLose) {
-                            teamWrap.classList.add('hide');
-                        }
-                    });
-                    if(activeOthers){
-                        othersArray = Array.from(activeOthers);
-                        indexCard = othersArray.indexOf(othersCard);
-                        console.log(indexCard);
-                    }
-
-                    othersConfirmBtn.classList.add('_lock');
-
-                    openPopup("Others", popupsWrap)
-                }
-
-                // закриття попапу на інші команди
-                if(popupsCloseBtn || !clickedCard && !popup ) {
-
-                    closePopup(popupsWrap);
-                }
-
-               // вибір предікту на 3 0
-                if(bigWinPopup && popupsTeam){
-                    if(clickedTeamName && popupsTeam){
-
-                        let isSelectedBigWin = JSON.parse(bigWin) ?? false
-
-                        if(isSelectedBigWin){
-                            sessionStorage.setItem("bigWinTemporary", bigWin)
-                        }
-                        let currentTeam = teams.find(team => team.dataAttr === clickedTeamName)
-                        sessionStorage.setItem("bigWinTemporary", JSON.stringify(currentTeam))
-
-                        allPopupsTeam.forEach((team) => {
-                            team.classList.remove('_selected')
-                            team.classList.add('_open')
-                        })
-                        popupsTeam.classList.add('_selected')
-                        popupsTeam.classList.remove('_open')
-                        if(sessionStorage.getItem("bigWinTemporary")){
-                            bigWinConfirmBtn.classList.remove('_lock')
-                        }else{
-                            bigWinConfirmBtn.classList.add('_lock')
-                        }
-
-                    }
-                }
-
-
-                // вибір предікту на 0 3
-                if(bigLosePopup && popupsTeam){
-
-                    if(clickedTeamName){
-
-                        let isSelectedBigLose = JSON.parse(bigLose) ?? false
-
-                        if(isSelectedBigLose){
-                            sessionStorage.setItem("bigLoseTemporary", bigLose)
-                        }
-                        let currentTeam = teams.find(team => team.dataAttr === clickedTeamName)
-                        sessionStorage.setItem("bigLoseTemporary", JSON.stringify(currentTeam))
-
-                        allPopupsTeam.forEach((team) => {
-                            team.classList.remove('_selected')
-                            team.classList.add('_open')
-                        })
-
-                        popupsTeam?.classList.add('_selected')
-                        popupsTeam?.classList.remove('_open')
-                        if(sessionStorage.getItem("bigLoseTemporary")){
-                            bigLoseConfirmBtn.classList.remove('_lock')
-                        }else{
-                            bigLoseConfirmBtn.classList.add('_lock')
-                        }
-                    }
-                }
-
-                // вибір предікту на всі інші команди
-                if (OthersPopup && popupsTeam) {
-                    // popupsTeam.classList.add('_selected');
-                    // popupsTeam.classList.remove('_open');
-                    if (clickedTeamName) {
-
-                        let currentTeam = teams.find(team => team.dataAttr === clickedTeamName);
-
-                        // let isInside = indexCard !== -1;
-
-                        // console.log(indexCard)
-
-                        currentTeam ={
-                            ...currentTeam,
-                            teamCardNum: indexCard
-                        }
-
-                        if (currentTeam) {
-                            let newPredict = JSON.parse(sessionStorage.getItem("teamsWinTemporary")) || [];
-
-                            const alreadyAdded = newPredict.some(item => item.dataAttr === currentTeam.dataAttr);
-                            const isPredictFull = newPredict.length >= 7;
-
-                            if (!alreadyAdded && !isPredictFull) {
-                                newPredict.push(currentTeam);
-                                sessionStorage.setItem("teamsWinTemporary", JSON.stringify(newPredict));
-                                console.log("✅ Added:", currentTeam);
-                                popupsTeam.classList.add('_selected');
-                                popupsTeam.classList.remove('_open');
-                            } else {
-                                newPredict = newPredict.filter(team => team.dataAttr !== currentTeam.dataAttr);
-                                sessionStorage.setItem("teamsWinTemporary", JSON.stringify(newPredict));
-                                console.log("⚠️ Team removed", currentTeam);
-                                popupsTeam.classList.remove('_selected');
-                                popupsTeam.classList.add('_open');
-                            }
-
-                            const updatedLength = newPredict.length;
-
-                            if (updatedLength < 7) {
-                                othersConfirmBtn.classList.add('_lock');
-                                allPopupsTeam.forEach(team => team.classList.remove('_lock'));
-                            } else if (updatedLength === 7) {
-                                othersConfirmBtn.classList.remove('_lock');
-                                allPopupsTeam.forEach(team => {
-                                    if (team.classList.contains('_open')) {
-                                        team.classList.add('_lock');
-                                    }
-                                });
-                            }
-                        } else {
-                            console.log("❌ Team not found for:", clickedTeamName);
-                        }
-
-
-                    }
-                }
-
-
-                // підтвердження вибору в попапі
-                if(confirmChooseBtn){
-
-                    teamsWin = JSON.parse(sessionStorage.getItem("teamsWinTemporary"));
-                    if(teamsWin) sessionStorage.setItem("teamsWin", JSON.stringify(teamsWin));
-
-                    bigLose = sessionStorage.getItem("bigLoseTemporary");
-                    if(bigLose) sessionStorage.setItem("bigLose", bigLose)
-
-                    bigWin = sessionStorage.getItem("bigWinTemporary");
-                    if(bigWin) sessionStorage.setItem("bigWin", bigWin)
-
-
-                    const bigWinPredict = JSON.parse(bigWin)
-                    const bigLosePredict = JSON.parse(bigLose)
-                    const otherTeamsPredict = teamsWin;
-
-                    if(bigLosePredict){
-                        activeBigLose.classList.remove('_open')
-                        activeBigLose.classList.add('_selected')
-                        activeBigLoseTeam.textContent = translateKey(bigLosePredict.dataAttr)
-                        activeBigLoseTeam.setAttribute('data-team', bigLosePredict.dataAttr)
-                    }
-
-                    if(bigWinPredict){
-                        activeBigWin.classList.remove('_open')
-                        activeBigWin.classList.add('_selected')
-                        activeBigWinTeam.textContent = translateKey(bigWinPredict.dataAttr)
-                        activeBigWinTeam.setAttribute('data-team', bigWinPredict.dataAttr)
-                    }
-
-                    if(otherTeamsPredict){
-                        otherTeamsPredict.forEach((team, i) => {
-                            const currentCardTeamName = activeOthers[i].querySelector(".stage__card-text");
-                            console.log(currentCardTeamName, team)
-
-                            activeOthers[i].classList.add('_selected')
-                            activeOthers[i].classList.remove('_open')
-
-                            currentCardTeamName.setAttribute('data-team', team.dataAttr)
-                            currentCardTeamName.textContent = translateKey(team.dataAttr)
-
-                        })
-                    }
-
-
-                    closePopup(popupsWrap);
-                }
+            makePredictBtn.addEventListener('click',()=>{
+                sendPredict()
             })
 
             setTimeout(hideLoader, 1000)
@@ -1019,7 +1141,6 @@
                     playoffPrev.removeEventListener('click', handlePrev);
                 }
             });
-
 
         }
 
