@@ -97,9 +97,14 @@
     &__wrapper
       max-width: 100%
       overflow: auto
+      padding: 10px 40px 10px 40px
+      &::-webkit-scrollbar-thumb
+        height: 2px
+        background: $green
       &::-webkit-scrollbar
-        width: 0
-        height: 0
+        background: rgba($green, .4)
+        height: 2px
+
 
 @media screen and (max-width: 850px)
   .table
@@ -272,12 +277,21 @@
       overflow: auto
       width: 100%
       padding: 5px 5px 10px 5px
+      scrollbar-width: auto
       &::-webkit-scrollbar
         height: 1px
         background: $white
       &::-webkit-scrollbar-thumb
         height: 1px
         background: $green
+  .table
+    scrollbar-width: auto
+    &::-webkit-scrollbar
+      height: 1px
+      background: $white
+    &::-webkit-scrollbar-thumb
+      height: 1px
+      background: $green
 
 @media screen and (max-width: 374px)
   .predictor
@@ -317,10 +331,16 @@
       width: 300px
       font-size: 58px
 
-@media screen and (max-width: 950px) and (max-height: 600px) and (orientation: landscape)
+@media screen and (max-width: 1500px) and (max-height: 800px) and (orientation: landscape)
   .popups
     .playoff
       transform: scale(.65) translateY(90px)
+      transform-origin: top
+
+@media screen and (max-width: 600px)
+  .popups
+    .playoff
+      transform: none
       transform-origin: top
 
 

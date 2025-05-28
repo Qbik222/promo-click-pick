@@ -274,6 +274,9 @@
             })
             console.log(predictBody)
         }
+        if(currentStage === 3){
+
+        }
 
     }
 
@@ -346,19 +349,51 @@
         const FinalsCards = finals.querySelectorAll(".playoff__choose-team");
         const winnerCards = winner.querySelectorAll(".playoff__choose-team");
 
-        const semiFinalChoose = [
-            JSON.parse(sessionStorage.getItem("semiFinals1") || "{}"),
-            JSON.parse(sessionStorage.getItem("semiFinals2") || "{}"),
-            JSON.parse(sessionStorage.getItem("semiFinals3") || "{}"),
-            JSON.parse(sessionStorage.getItem("semiFinals4") || "{}")
-        ];
+        // Отримати непорожні об'єкти з sessionStorage для півфіналів
+        const semiFinalChoose = [];
+        for (let i = 1; i <= 4; i++) {
+            const item = sessionStorage.getItem(`semiFinals${i}`);
+            if (item) {
+                try {
+                    const parsed = JSON.parse(item);
+                    if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
+                        semiFinalChoose.push(parsed);
+                    }
+                } catch (e) {
+                    console.warn(`Помилка парсингу semiFinals${i}:`, e);
+                }
+            }
+        }
 
-        const finalChoose = [
-            JSON.parse(sessionStorage.getItem("finals1") || "{}"),
-            JSON.parse(sessionStorage.getItem("finals2") || "{}")
-        ];
+        // Отримати непорожні об'єкти з sessionStorage для фіналів
+        const finalChoose = [];
+        for (let i = 1; i <= 2; i++) {
+            const item = sessionStorage.getItem(`finals${i}`);
+            if (item) {
+                try {
+                    const parsed = JSON.parse(item);
+                    if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
+                        finalChoose.push(parsed);
+                    }
+                } catch (e) {
+                    console.warn(`Помилка парсингу finals${i}:`, e);
+                }
+            }
+        }
 
-        const winnerChoose = JSON.parse(sessionStorage.getItem("winner") || "{}");
+        // Отримати переможця, якщо він валідний
+        let winnerChoose = {};
+        const winnerItem = sessionStorage.getItem("winner");
+        if (winnerItem) {
+            try {
+                const parsed = JSON.parse(winnerItem);
+                if (parsed && typeof parsed === "object" && !Array.isArray(parsed) && Object.keys(parsed).length > 0) {
+                    winnerChoose = parsed;
+                }
+            } catch (e) {
+                console.warn("Помилка парсингу winner:", e);
+            }
+        }
 
         return {
             quarterFinalsCards,
@@ -371,7 +406,6 @@
         };
     }
 
-
     function setPlayoff(quarterFinals, semiFinals, finals, winner){
         let {
             quarterFinalsCards,
@@ -381,27 +415,7 @@
             semiFinalChoose,
             finalChoose,
             winnerChoose
-        } = extractPlayoffSelections(quarterFinals, semiFinals, finals, winner);
-
-        semiFinalChoose = [
-            JSON.parse(sessionStorage.getItem("semiFinals1") || "{}"),
-            JSON.parse(sessionStorage.getItem("semiFinals2") || "{}"),
-            JSON.parse(sessionStorage.getItem("semiFinals3") || "{}"),
-            JSON.parse(sessionStorage.getItem("semiFinals4") || "{}")
-        ];
-
-        finalChoose = [
-            JSON.parse(sessionStorage.getItem("finals1") || "{}"),
-            JSON.parse(sessionStorage.getItem("finals2") || "{}"),
-        ];
-
-        winnerChoose = JSON.parse(sessionStorage.getItem("winner") || "{}");
-
-
-
-
-
-        console.log(winnerChoose);
+        } = extractPlayoffSelections(quarterFinals, semiFinals, finals, winner)
 
         quarterFinalsCards.forEach((card, i) => {
 
@@ -418,17 +432,37 @@
 
         })
 
-        semiFinalsCards.forEach((card, i) => {
-            card.classList.remove("_done", "_selected");
-            card.classList.add("_open");
+        FinalsCards.forEach((card, i) => {
+            if(semiFinalChoose.length < 4) {
+                card.classList.add("_lock");
+            }else{
+                card.classList.remove("_lock");
+            }
         })
 
-        winnerCard.classList.remove("_selected");
-        winnerCard.classList.add("_open");
+        if(finalChoose.length < 2) {
+            winnerCard.classList.add("_lock");
+        }else{
+            winnerCard.classList.remove("_lock");
+        }
+
+        console.log(winnerChoose)
+
+        if(winnerChoose && Object.keys(winnerChoose).length > 0){
+            winnerCard.classList.add("_selected");
+            winnerCard.classList.remove("_open");
+            winnerCard.setAttribute("data-team", winnerChoose.dataAttr);
+            winnerCard.querySelector(".playoff__card-text").textContent = translateKey(winnerChoose.dataAttr);
+        }
+
+        if(semiFinalChoose.length < 4 || finalChoose.length < 2 || !winnerChoose) {
+            makePredictBtn.classList.add("_lock");
+        }else{
+            winnerCard.classList.remove("_lock");
+        }
+
 
     }
-
-
 
     async function getUserPredict() {
         const res = await request('/stage');
@@ -864,25 +898,17 @@
                             btn.classList.remove('_selected');
                             btn.classList.add('_open');
                         }
-                        closePopup(popupsWrap);
-
                         btn.addEventListener('click', e => {
                             semiFinalsTeams = [...addTeamsFromPair(quarterFinalsPairs, [])];
                             const btnPairNumber = Number(btn.getAttribute("data-choose-semifinal"))
 
-
                             let predictPairData = []
 
-                            console.log(semiFinalsTeams)
                             semiFinalsTeams.forEach(team =>{
                                 if(team.pairNum === btnPairNumber){
                                     predictPairData.push(team);
                                 }
                             })
-
-
-
-                            console.log(semiFinalsTeams);
 
                             renderPlayoffPopup(playoffSemiFinalPopup, predictPairData,`semiFinals${i + 1}`, `semiFinalsTemporary${i + 1}`)
 
@@ -907,7 +933,10 @@
                                     confirmPredictBtn.classList.remove('_lock');
                                 }
                                 closePopup(popupsWrap);
+                                setPlayoff(quarterFinals, semiFinals, finals, winner)
                             })
+
+
 
                         })
 
@@ -935,9 +964,7 @@
                             btn.classList.remove('_selected');
                             btn.classList.add('_open');
                         }
-
-                        closePopup(popupsWrap);
-
+                        // closePopup(popupsWrap);
                         btn.addEventListener('click', e => {
                             finalsTeams = [...addTeamsFromPair(semiFinalsPairs, [])];
                             const btnPairNumber = Number(btn.getAttribute("data-choose-final"));
@@ -964,6 +991,7 @@
 
                                 confirmPredictBtn.removeEventListener("click", confirmHandler);
                                 closePopup(popupsWrap);
+                                setPlayoff(quarterFinals, semiFinals, finals, winner)
                             };
 
                             confirmPredictBtn.addEventListener("click", confirmHandler);
@@ -992,6 +1020,7 @@
 
                             confirmPredictBtn.removeEventListener("click", confirmHandler);
                             closePopup(popupsWrap);
+                            setPlayoff(quarterFinals, semiFinals, finals, winner)
                         };
 
                         confirmPredictBtn.addEventListener("click", confirmHandler);
@@ -1050,10 +1079,13 @@
                         if(Number(targetStageValue) - 1 !== currentStage ){
                             makePredictBtn.classList.add('hide');
                             results.classList.add("noBg")
+                            predictorCheckIn.classList.add('hide');
 
                         }else{
                             makePredictBtn.classList.remove('hide');
                             results.classList.remove("noBg")
+                            predictorCheckIn.classList.remove('hide');
+
                         }
 
                     });
@@ -1578,23 +1610,6 @@
     const popupWin = document.querySelector('.win-popup');
     const popupLose = document.querySelector('.lose-popup');
     const popupOther = document.querySelector('.others-popup');
-
-    console.log(popupWin.querySelector(".playoff__popup-close"))
-
-    // function setHidePopup(popup){
-    //     console.log(popup.querySelector(".playoff__popup-close"));
-    //     const closeBtn = popup.querySelector('.playoff__popup-close');
-    //
-    //     closeBtn.addEventListener('click', () =>{
-    //         overlay.classList.add('overlay-opacity');
-    //         popup.classList.add("hide")
-    //     });
-    // }
-    //
-    // setHidePopup(popupWin);
-    // setHidePopup(popupLose);
-    // setHidePopup(popupOther);
-
 
     document.querySelector('.btn-popup-win').addEventListener('click', () =>{
         overlay.classList.remove('overlay-opacity');
