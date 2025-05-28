@@ -15,9 +15,9 @@
 
     const currentDate = new Date("2025-04-05T00:00:00+03:00");
 
-    let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
+    // let currentStage = stagesData.filter(stage => stage.data <= currentDate).length ?? 3;
 
-    // let currentStage = Number(sessionStorage.getItem("currentDate"))
+    let currentStage = Number(sessionStorage.getItem("currentDate"))
 
     // let currentStage = 4
 
