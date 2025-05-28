@@ -273,25 +273,25 @@
   .results
     max-width: 100%
     overflow: hidden
+
     &__scroll
-      overflow: auto
+      overflow-x: auto
+      -webkit-overflow-scrolling: touch
       width: 100%
       padding: 5px 5px 10px 5px
       scrollbar-width: auto
+
       &::-webkit-scrollbar
         height: 1px
-        background: $white
+        background: #ffffff
+
       &::-webkit-scrollbar-thumb
         height: 1px
         background: $green
-  .table
-    scrollbar-width: auto
-    &::-webkit-scrollbar
-      height: 1px
-      background: $white
-    &::-webkit-scrollbar-thumb
-      height: 1px
-      background: $green
+
+      .table
+        min-width: 400px
+        white-space: nowrap
 
 @media screen and (max-width: 374px)
   .predictor
