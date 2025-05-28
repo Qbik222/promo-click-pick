@@ -310,6 +310,7 @@ body
       border-radius: 3px
       background: rgba($white, 0.24)
       border: 1px solid rgba($white, 0.17)
+      white-space: nowrap
       &:hover
         cursor: pointer
       &._active
@@ -968,6 +969,7 @@ body
       display: flex
       flex-direction: column
       align-items: center
+      scrollbar-width: auto
     &::-webkit-scrollbar
       width: 2px
       background: $white
@@ -1070,7 +1072,8 @@ body
     display: flex
     flex-direction: column
     position: relative
-    width: fit-content
+    width: 100%
+    max-width: 600px
     bottom: auto
     left: auto
     top: auto
@@ -1095,6 +1098,7 @@ body
     &__popup
       display: flex
       max-width: 650px
+      width: 100%
       flex-direction: column
       align-items: center
       justify-content: center
@@ -1156,6 +1160,7 @@ body
         gap: 15px
         overflow: auto
         max-height: 550px
+        width: 100%
         position: relative
         scrollbar-width: auto
         padding-bottom: 30px

@@ -59,6 +59,9 @@
     let finalsTeams = []
     let winners = []
 
+    let semiFinalChoose = []
+    let finalChoose = []
+    let winnerChoose = null
 
     const ukLeng = document.querySelector('#ukLeng');
     const enLeng = document.querySelector('#enLeng');
@@ -337,16 +340,68 @@
         checkUserAuth()
     }
 
-    function setPlayoff(quarterFinals, semiFinals, finals, winner){
-
-
-
+    function extractPlayoffSelections(quarterFinals, semiFinals, finals, winner) {
         const quarterFinalsCards = quarterFinals.querySelectorAll(".playoff__choose-team");
         const semiFinalsCards = semiFinals.querySelectorAll(".playoff__choose-team");
         const FinalsCards = finals.querySelectorAll(".playoff__choose-team");
         const winnerCards = winner.querySelectorAll(".playoff__choose-team");
 
-        console.log(semiFinalsCards);
+        const semiFinalChoose = [
+            JSON.parse(sessionStorage.getItem("semiFinals1") || "{}"),
+            JSON.parse(sessionStorage.getItem("semiFinals2") || "{}"),
+            JSON.parse(sessionStorage.getItem("semiFinals3") || "{}"),
+            JSON.parse(sessionStorage.getItem("semiFinals4") || "{}")
+        ];
+
+        const finalChoose = [
+            JSON.parse(sessionStorage.getItem("finals1") || "{}"),
+            JSON.parse(sessionStorage.getItem("finals2") || "{}")
+        ];
+
+        const winnerChoose = JSON.parse(sessionStorage.getItem("winner") || "{}");
+
+        return {
+            quarterFinalsCards,
+            semiFinalsCards,
+            FinalsCards,
+            winnerCards,
+            semiFinalChoose,
+            finalChoose,
+            winnerChoose
+        };
+    }
+
+
+    function setPlayoff(quarterFinals, semiFinals, finals, winner){
+        let {
+            quarterFinalsCards,
+            semiFinalsCards,
+            FinalsCards,
+            winnerCards,
+            semiFinalChoose,
+            finalChoose,
+            winnerChoose
+        } = extractPlayoffSelections(quarterFinals, semiFinals, finals, winner);
+
+        semiFinalChoose = [
+            JSON.parse(sessionStorage.getItem("semiFinals1") || "{}"),
+            JSON.parse(sessionStorage.getItem("semiFinals2") || "{}"),
+            JSON.parse(sessionStorage.getItem("semiFinals3") || "{}"),
+            JSON.parse(sessionStorage.getItem("semiFinals4") || "{}")
+        ];
+
+        finalChoose = [
+            JSON.parse(sessionStorage.getItem("finals1") || "{}"),
+            JSON.parse(sessionStorage.getItem("finals2") || "{}"),
+        ];
+
+        winnerChoose = JSON.parse(sessionStorage.getItem("winner") || "{}");
+
+
+
+
+
+        console.log(winnerChoose);
 
         quarterFinalsCards.forEach((card, i) => {
 
@@ -361,7 +416,6 @@
             card.classList.add("_done");
 
 
-
         })
 
         semiFinalsCards.forEach((card, i) => {
@@ -369,7 +423,12 @@
             card.classList.add("_open");
         })
 
+        winnerCard.classList.remove("_selected");
+        winnerCard.classList.add("_open");
+
     }
+
+
 
     async function getUserPredict() {
         const res = await request('/stage');
@@ -583,7 +642,6 @@
                     card.classList.add("_done")
                 })
             }else{
-                console.log(bigWinTeam.outcome)
                 stageCards.forEach((card, i) =>{
                     const currentData = othersTeams[i]
                     if(currentData.outcome){
@@ -798,11 +856,6 @@
 
                         let btnCurrentData = JSON.parse(sessionStorage.getItem(`semiFinals${i + 1}`));
 
-                        if(semiFinalsTeams.length < 4){
-                            confirmPredictBtn.classList.add('_lock');
-                        }else{
-                            confirmPredictBtn.classList.remove('_lock');
-                        }
                         if(btnCurrentData){
                             btn.classList.add('_selected');
                             btn.setAttribute("data-team", btnCurrentData.dataAttr);
@@ -869,6 +922,11 @@
 
                         let btnCurrentData = JSON.parse(sessionStorage.getItem(`finals${i + 1}`));
 
+                        if(semiFinalChoose.length < 4){
+                            confirmPredictBtn.classList.add('_lock');
+                        }else{
+                            confirmPredictBtn.classList.remove('_lock');
+                        }
                         if (btnCurrentData) {
                             btn.classList.add('_selected');
                             btn.setAttribute("data-team", btnCurrentData.dataAttr);
@@ -1561,7 +1619,7 @@
 
     document.querySelector('.btn-timer')?.addEventListener('click', () => {
         const stage1 = '1'
-        const stage2 = '4'
+        const stage2 = '3'
 
         const savedDate = sessionStorage.getItem("currentDate");
 
